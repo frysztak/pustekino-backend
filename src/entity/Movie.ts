@@ -10,10 +10,10 @@ export class Movie {
     multikinoId: number;
 
     @Column()
-    name_pl: string;
+    title_pl: string;
 
     @Column()
-    name_eng: string;
+    title_eng: string;
 
     @Column()
     poster_url: string;
@@ -25,11 +25,14 @@ export class Movie {
     genres: string[];
 
     @Column()
-    runtime: string;
+    runtime: number;
+
+    @Column()
+    hero_url_desktop: string;
+
+    @Column()
+    hero_url_mobile: string;
 
     @Column("text", { array: true })
-    images_desktop: string[];
-
-    @Column("text", { array: true })
-    images_mobile: string[];
+    preview_image_urls: string[];
 }

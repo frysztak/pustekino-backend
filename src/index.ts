@@ -1,11 +1,13 @@
 import "reflect-metadata";
 import { createConnection } from "typeorm";
-import * as express from "express";
+import express from "express";
 import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
 import { Routes } from "./routes";
 import { Cinema } from "./entity/Cinema";
+import { MultikinoScraper } from "./scraper/MultikinoScraper";
 const fs = require("fs-extra");
+import fetch from "fetch-with-proxy";
 
 const getMultikinoCinemas = async (): Promise<Cinema[]> => {
     const raw = await fs.readFile(`/home/frysztak/repo/IntroKino-backend/data/multikino-cinemas.json`);
@@ -55,4 +57,12 @@ createConnection().then(async connection => {
 
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
 
-}).catch(error => console.log(error));
+    await fetch("https://wp.pl")
+    console.log('fetched')
+
+    const multikino = new MultikinoScraper()
+    const movies = await multikino.getCurrentlyShownMovies(18)
+    console.log(movies)
+
+
+}).catch(error => { debugger; console.log(error) });
