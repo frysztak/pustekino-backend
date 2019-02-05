@@ -7,10 +7,9 @@ import { Routes } from "./routes";
 import { Cinema } from "./entity/Cinema";
 import { MultikinoScraper } from "./scraper/MultikinoScraper";
 const fs = require("fs-extra");
-import fetch from "fetch-with-proxy";
 
 const getMultikinoCinemas = async (): Promise<Cinema[]> => {
-    const raw = await fs.readFile(`/home/frysztak/repo/IntroKino-backend/data/multikino-cinemas.json`);
+    const raw = await fs.readFile(`/home/sebastian/repo/introkino-backend/data/multikino-cinemas.json`);
     const json = JSON.parse(raw);
     return json.map((entry: any) => {
         const cinema = new Cinema()
@@ -57,12 +56,9 @@ createConnection().then(async connection => {
 
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
 
-    await fetch("https://wp.pl")
-    console.log('fetched')
-
     const multikino = new MultikinoScraper()
     const movies = await multikino.getCurrentlyShownMovies(18)
     console.log(movies)
 
 
-}).catch(error => { debugger; console.log(error) });
+}).catch(error => { console.log(error) });

@@ -174,3 +174,22 @@ export enum Type {
     MarathonEvent = "Marathon Event",
     StandardEvent = "Standard Event",
 }
+
+export interface Gallery {
+    id:       string;
+    trailers: Trailer[];
+    photos:   Photo[];
+}
+
+export interface Photo {
+    url:   string;
+    thumb: string;
+    alt:   string;
+}
+
+export interface Trailer {
+    thumb:  string;
+    poster: string;
+    video:  string;
+    type:   string;
+}
