@@ -1,0 +1,226 @@
+[
+  {
+    "id": "3",
+    "city": "Bydgoszcz",
+    "areaId": "3000000010113",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "37",
+    "city": "Czechowice-Dziedzice",
+    "areaId": "37000000010114",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "2",
+    "city": "Elbląg",
+    "areaId": "2000000101213",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "4",
+    "city": "Gdańsk",
+    "areaId": "4000000010102",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "41",
+    "city": "Jaworzno",
+    "areaId": "41000000101216",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "39",
+    "city": "Katowice",
+    "areaId": "39000000010115",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "33",
+    "city": "Kielce",
+    "areaId": "33000000010104",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "6",
+    "city": "Koszalin",
+    "areaId": "6000000010105",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "7",
+    "city": "Kraków",
+    "areaId": "7000000010106",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "38",
+    "city": "Lublin",
+    "areaId": "38000000010116",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "21",
+    "city": "Łódź",
+    "areaId": "21000000010111",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "40",
+    "city": "Olsztyn",
+    "areaId": "40000000101169",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "8",
+    "city": "Poznań Malta",
+    "areaId": "8000000010117",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "9",
+    "city": "Poznań Multikino 51",
+    "areaId": "9000000010118",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "10",
+    "city": "Poznań Stary Browar",
+    "areaId": "10000000010119",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "42",
+    "city": "Pruszków",
+    "areaId": "42000000010132",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "26",
+    "city": "Radom",
+    "areaId": "26000000010112",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "25",
+    "city": "Rumia",
+    "areaId": "25000000010120",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "11",
+    "city": "Rybnik",
+    "areaId": "11000000010121",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "30",
+    "city": "Rzeszów",
+    "areaId": "30000000010122",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "32",
+    "city": "Słupsk",
+    "areaId": "32000000010123",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "12",
+    "city": "Sopot",
+    "areaId": "12000000010124",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "13",
+    "city": "Szczecin",
+    "areaId": "13000000010125",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "35",
+    "city": "Tychy",
+    "areaId": "35000000010131",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "14",
+    "city": "Warszawa Targówek",
+    "areaId": "14000000010109",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "19",
+    "city": "Warszawa Ursynów",
+    "areaId": "19000000010107",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "15",
+    "city": "Warszawa Wola Park",
+    "areaId": "15000000010110",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "1",
+    "city": "Warszawa Złote Tarasy",
+    "areaId": "1000000010108",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "16",
+    "city": "Włocławek",
+    "areaId": "16000000010126",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "18",
+    "city": "Wrocław Pasaż Grunwaldzki",
+    "areaId": "18000000010128",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "20",
+    "city": "Zabrze",
+    "areaId": "20000000010129",
+    "status": "1",
+    "applyIsPair": "1"
+  },
+  {
+    "id": "34",
+    "city": "Zgorzelec",
+    "areaId": "34000000010130",
+    "status": "1",
+    "applyIsPair": "1"
+  }
+]
