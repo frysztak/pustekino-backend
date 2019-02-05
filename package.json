@@ -5,18 +5,16 @@
    "devDependencies": {
       "@types/cheerio": "^0.22.10",
       "@types/node": "^10.12.21",
-      "@types/node-fetch": "^2.1.4",
       "@types/puppeteer": "^1.12.1",
       "ts-node": "8.0.2",
       "typescript": "3.3.1"
    },
    "dependencies": {
+      "axios": "^0.18.0",
       "body-parser": "^1.18.1",
       "cheerio": "^1.0.0-rc.2",
       "express": "^4.15.4",
-      "fetch-with-proxy": "^1.1.0",
       "fs-extra": "^7.0.1",
-      "isomorphic-fetch": "^2.2.1",
       "pg": "^7.3.0",
       "puppeteer": "^1.12.1",
       "reflect-metadata": "^0.1.10",

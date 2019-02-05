@@ -1,7 +1,7 @@
 import { CinemaScraper } from "./CinemaScraper";
 import { Movie } from "../entity/Movie";
 import { Showings, Film, Gallery } from "./MultikinoTypes";
-import fetch from "fetch-with-proxy";
+import axios from "axios";
 import * as cheerio from "cheerio";
 import * as url from "url";
 import puppeteer from "puppeteer";
@@ -18,8 +18,13 @@ type HeroImage = {
 
 export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
-    const res = await fetch(`https://multikino.pl`);
-    const html = await res.text();
+    let html: string = "";
+    try {
+      const res = await axios.get(`https://multikino.pl`);
+      html = res.data;
+    } catch (err) {
+      console.error(err);
+    }
     const $ = cheerio.load(html);
 
     return $(".carousel__ctafull")
@@ -75,8 +80,8 @@ export class MultikinoScraper extends CinemaScraper {
 
   async getCurrentlyShownMovies(cinemaId: number): Promise<Movie[]> {
     const url = getShowingsUrl(cinemaId);
-    const res = await fetch(url);
-    const showings = (await res.json()) as Showings;
+    const res = await axios.get(url);
+    const showings = res.data as Showings;
 
     const currentlyShownFilms = showings.films.filter(
       film =>
