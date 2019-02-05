@@ -1,11 +1,19 @@
 import { CinemaScraper } from "./CinemaScraper";
 import { Movie } from "../entity/Movie";
-import { Showings, Film, Gallery } from "./MultikinoTypes";
+import {
+  Showings,
+  Film,
+  Gallery,
+  MovieVersion,
+  MovieDay
+} from "./MultikinoTypes";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import * as url from "url";
 import puppeteer from "puppeteer";
 import { debug } from "util";
+import { Seance } from "../entity/Seance";
+import moment from "moment";
 
 const getShowingsUrl = (cinemaId: number) =>
   `https://multikino.pl/data/filmswithshowings/${cinemaId}`;
@@ -110,5 +118,43 @@ export class MultikinoScraper extends CinemaScraper {
     }
 
     return movies;
+  }
+
+  async getSeances(cinemaId: number, movieId: number): Promise<Seance[]> {
+    let u = `https://multikino.pl/data/getVersions`;
+    const config = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+    let res = await axios.post(u, { cinema_id: cinemaId, film_id: movieId }, config);
+
+
+    const movieVersions = res.data as MovieVersion[];
+    const movieDays = await Promise.all(
+      movieVersions.map(async version => {
+        const u = `https://multikino.pl/data/getDays`;
+        res = await axios.post(u, {
+          cinema_id: cinemaId,
+          film_id: movieId,
+          version_id: version.id
+        }, config);
+        return res.data as MovieDay[];
+      })
+    );
+
+    const flatMovieDays = ([] as MovieDay[]).concat(...movieDays);
+    const seances: Seance[] = [];
+
+    for (const movieDay of flatMovieDays) {
+      for (const hour of movieDay.hours) {
+        const seance = new Seance();
+        // 10:20 06.02.2019
+        const datetime = `${hour.h} ${movieDay.day}.${movieDay.year}`;
+
+        seance.date = moment(datetime, "HH:mm DD.MM.YYYY").toDate();
+        seance.multikinoId = hour.id;
+
+        seances.push(seance);
+      }
+    }
+
+    return seances;
   }
 }

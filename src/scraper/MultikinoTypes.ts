@@ -193,3 +193,24 @@ export interface Trailer {
     video:  string;
     type:   string;
 }
+
+export interface MovieVersion {
+    tech:      string;
+    ver:       string;
+    msg:       string;
+    id:        string;
+    cinema_id: string;
+}
+
+export interface MovieDay {
+    day:   string;
+    year:  string;
+    label: string;
+    hours: Hour[];
+    id:    number;
+}
+
+export interface Hour {
+    h:  string;
+    id: number;
+}

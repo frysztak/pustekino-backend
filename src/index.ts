@@ -6,6 +6,7 @@ import { Request, Response } from "express";
 import { Routes } from "./routes";
 import { Cinema } from "./entity/Cinema";
 import { MultikinoScraper } from "./scraper/MultikinoScraper";
+import { Movie } from "./entity/Movie";
 const fs = require("fs-extra");
 
 const getMultikinoCinemas = async (): Promise<Cinema[]> => {
@@ -57,8 +58,18 @@ createConnection().then(async connection => {
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
 
     const multikino = new MultikinoScraper()
-    const movies = await multikino.getCurrentlyShownMovies(18)
-    console.log(movies)
+    //const movies = await multikino.getCurrentlyShownMovies(18)
+    //await connection
+    //    .createQueryBuilder()
+    //    .insert()
+    //    .orIgnore()
+    //    .into(Movie)
+    //    .values(movies)
+    //    .execute()
 
+    const moviesRepo = connection.getRepository(Movie)
+    const movies = await moviesRepo.find()
+    const seances = await multikino.getSeances(18, movies[0].multikinoId)
+    console.log(seances)
 
 }).catch(error => { console.log(error) });
