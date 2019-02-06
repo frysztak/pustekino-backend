@@ -7,16 +7,16 @@ import {
   MovieVersion,
   MovieDay
 } from "./MultikinoTypes";
-import axios from "axios";
 import * as cheerio from "cheerio";
 import * as url from "url";
 import puppeteer from "puppeteer";
 import { debug } from "util";
 import { Seance } from "../entity/Seance";
 import moment from "moment";
+import { axiosClient } from "./Axios";
 
 const getShowingsUrl = (cinemaId: number) =>
-  `https://multikino.pl/data/filmswithshowings/${cinemaId}`;
+  `/data/filmswithshowings/${cinemaId}`;
 
 type HeroImage = {
   movieId: number;
@@ -28,7 +28,7 @@ export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
     let html: string = "";
     try {
-      const res = await axios.get(`https://multikino.pl`);
+      const res = await axiosClient.get(`https://multikino.pl`);
       html = res.data;
     } catch (err) {
       console.error(err);
@@ -69,10 +69,18 @@ export class MultikinoScraper extends CinemaScraper {
       .get();
   }
 
+  getProxy(): string {
+    return process.env.https_proxy;
+  }
+
   async getPreviewImages(moviename: string): Promise<string[]> {
-    const u = `https://multikino.pl/filmy/${moviename}`;
+    const u = `/filmy/${moviename}`;
     debug(`Fetching ${u}`);
-    const browser = await puppeteer.launch({ headless: true });
+    const proxy = this.getProxy();
+    const browser = await puppeteer.launch({
+      headless: false,
+      args: [`--proxy-server:${proxy}`]
+    });
     const page = await browser.newPage();
     try {
       await page.goto(u);
@@ -88,7 +96,7 @@ export class MultikinoScraper extends CinemaScraper {
 
   async getCurrentlyShownMovies(cinemaId: number): Promise<Movie[]> {
     const url = getShowingsUrl(cinemaId);
-    const res = await axios.get(url);
+    const res = await axiosClient.get(url);
     const showings = res.data as Showings;
 
     const currentlyShownFilms = showings.films.filter(
@@ -121,20 +129,29 @@ export class MultikinoScraper extends CinemaScraper {
   }
 
   async getSeances(cinemaId: number, movieId: number): Promise<Seance[]> {
-    let u = `https://multikino.pl/data/getVersions`;
-    const config = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-    let res = await axios.post(u, { cinema_id: cinemaId, film_id: movieId }, config);
-
+    let u = `/data/getVersions`;
+    const config = {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" }
+    };
+    let res = await axiosClient.post(
+      u,
+      { cinema_id: cinemaId, film_id: movieId },
+      config
+    );
 
     const movieVersions = res.data as MovieVersion[];
     const movieDays = await Promise.all(
       movieVersions.map(async version => {
-        const u = `https://multikino.pl/data/getDays`;
-        res = await axios.post(u, {
-          cinema_id: cinemaId,
-          film_id: movieId,
-          version_id: version.id
-        }, config);
+        const u = `/data/getDays`;
+        res = await axiosClient.post(
+          u,
+          {
+            cinema_id: cinemaId,
+            film_id: movieId,
+            version_id: version.id
+          },
+          config
+        );
         return res.data as MovieDay[];
       })
     );
