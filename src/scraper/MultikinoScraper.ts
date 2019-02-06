@@ -14,6 +14,7 @@ import { debug } from "util";
 import { Seance } from "../entity/Seance";
 import moment from "moment";
 import { axiosClient } from "./Axios";
+import querystring from "querystring";
 
 const getShowingsUrl = (cinemaId: number) =>
   `/data/filmswithshowings/${cinemaId}`;
@@ -130,13 +131,12 @@ export class MultikinoScraper extends CinemaScraper {
 
   async getSeances(cinemaId: number, movieId: number): Promise<Seance[]> {
     let u = `/data/getVersions`;
-    const config = {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    };
     let res = await axiosClient.post(
       u,
-      { cinema_id: cinemaId, film_id: movieId },
-      config
+      querystring.stringify({
+        cinema_id: cinemaId,
+        film_id: movieId
+      })
     );
 
     const movieVersions = res.data as MovieVersion[];
@@ -145,12 +145,11 @@ export class MultikinoScraper extends CinemaScraper {
         const u = `/data/getDays`;
         res = await axiosClient.post(
           u,
-          {
+          querystring.stringify({
             cinema_id: cinemaId,
             film_id: movieId,
             version_id: version.id
-          },
-          config
+          })
         );
         return res.data as MovieDay[];
       })

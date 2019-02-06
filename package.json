@@ -21,6 +21,7 @@
       "moment": "^2.24.0",
       "pg": "^7.3.0",
       "puppeteer": "^1.12.1",
+      "querystring": "^0.2.0",
       "reflect-metadata": "^0.1.10",
       "tunnel": "0.0.6",
       "typeorm": "0.2.12"
