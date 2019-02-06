@@ -1,35 +1,37 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToOne, JoinColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Unique,
+  OneToOne,
+  JoinColumn
+} from "typeorm";
 import { Cinema } from "./Cinema";
 import { Movie } from "./Movie";
-import { Room } from "./Room";
 
 @Entity()
 @Unique(["multikinoId"])
 export class Seance {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    multikinoId: number;
+  @Column()
+  multikinoId: number;
 
-    @Column()
-    date: Date;
+  @Column()
+  date: Date;
 
-    @Column()
-    allSeatCount: number;
+  @Column({ nullable: true })
+  allSeatCount: number;
 
-    @Column()
-    takenSeatCount: number;
+  @Column({ nullable: true })
+  takenSeatCount: number;
 
-    @OneToOne(type => Cinema)
-    @JoinColumn()
-    cinema: Cinema;
+  @OneToOne(type => Cinema)
+  @JoinColumn()
+  cinema: Cinema;
 
-    @OneToOne(type => Movie)
-    @JoinColumn()
-    movie: Movie;
-
-    @OneToOne(type => Room)
-    @JoinColumn()
-    room: Room;
+  @OneToOne(type => Movie)
+  @JoinColumn()
+  movie: Movie;
 }
