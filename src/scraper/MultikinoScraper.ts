@@ -13,6 +13,7 @@ import puppeteer from "puppeteer";
 import { debug } from "util";
 import { Seance } from "../entity/Seance";
 import moment from "moment";
+import "moment-timezone";
 import { axiosClient } from "./Axios";
 import querystring from "querystring";
 import { Cinema } from "../entity/Cinema";
@@ -169,10 +170,12 @@ export class MultikinoScraper extends CinemaScraper {
         // 10:20 06.02.2019
         const datetime = `${hour.h} ${movieDay.day}.${movieDay.year}`;
 
-        seance.date = moment(datetime, "HH:mm DD.MM.YYYY").toDate();
+        seance.date = moment
+          .tz(datetime, "HH:mm DD.MM.YYYY", "Europe/Warsaw")
+          .toDate();
         seance.multikinoId = hour.id;
-        seance.movie = movie
-        seance.cinema = cinema
+        seance.movie = movie;
+        seance.cinema = cinema;
 
         seances.push(seance);
       }

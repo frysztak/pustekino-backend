@@ -4,6 +4,7 @@
    "description": "Awesome project developed with TypeORM.",
    "devDependencies": {
       "@types/cheerio": "^0.22.10",
+      "@types/moment-timezone": "^0.5.10",
       "@types/node": "^10.12.21",
       "@types/puppeteer": "^1.12.1",
       "@types/tunnel": "0.0.0",
@@ -19,6 +20,7 @@
       "express": "^4.15.4",
       "fs-extra": "^7.0.1",
       "moment": "^2.24.0",
+      "moment-timezone": "^0.5.23",
       "pg": "^7.3.0",
       "puppeteer": "^1.12.1",
       "querystring": "^0.2.0",
