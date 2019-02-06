@@ -7,6 +7,7 @@ import { Routes } from "./routes";
 import { Cinema } from "./entity/Cinema";
 import { MultikinoScraper } from "./scraper/MultikinoScraper";
 import { Movie } from "./entity/Movie";
+import { Scheduler } from "./Scheduler";
 const fs = require("fs-extra");
 
 const getMultikinoCinemas = async (): Promise<Cinema[]> => {
@@ -55,9 +56,12 @@ createConnection().then(async connection => {
         .values(multikinoCinemas)
         .execute()
 
+    const multikino = new MultikinoScraper()
+    const scheduler = new Scheduler(connection, multikino)
+    await scheduler.start()
+
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
 
-    const multikino = new MultikinoScraper()
     //const movies = await multikino.getCurrentlyShownMovies(18)
     //await connection
     //    .createQueryBuilder()
