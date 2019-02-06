@@ -76,21 +76,12 @@ export class Scheduler {
       where: { multikinoId: 18 }
     });
 
-    schedule.scheduleJob(
-      //{ hour: 1, minute: 0 },
-      { minute: 28 },
-      async () => {
-        //await this.scrapeCurrentMovies(wroclawCinema);
+    schedule.scheduleJob({ hour: 1, minute: 0 }, async () => {
+      await this.scrapeCurrentMovies(wroclawCinema);
 
-        const moviesRepo = this.dbConnection.getRepository(Movie);
-        const movies = await moviesRepo.find();
-        for (const movie of movies) {
-          await this.scrapeSeances(wroclawCinema, movie);
-        }
-        //await Promise.all(
-        //  movies.map(m => this.scrapeSeances(wroclawCinema, m))
-        //);
-      }
-    );
+      const moviesRepo = this.dbConnection.getRepository(Movie);
+      const movies = await moviesRepo.find();
+      await Promise.all(movies.map(m => this.scrapeSeances(wroclawCinema, m)));
+    });
   }
 }

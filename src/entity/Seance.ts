@@ -3,8 +3,8 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Unique,
-  OneToOne,
-  JoinColumn
+  JoinColumn,
+  ManyToOne
 } from "typeorm";
 import { Cinema } from "./Cinema";
 import { Movie } from "./Movie";
@@ -27,11 +27,11 @@ export class Seance {
   @Column({ nullable: true })
   takenSeatCount: number;
 
-  @OneToOne(type => Cinema)
+  @ManyToOne(type => Cinema)
   @JoinColumn()
   cinema: Cinema;
 
-  @OneToOne(type => Movie)
+  @ManyToOne(type => Movie)
   @JoinColumn()
   movie: Movie;
 }
