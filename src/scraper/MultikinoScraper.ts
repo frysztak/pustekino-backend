@@ -74,12 +74,12 @@ export class MultikinoScraper extends CinemaScraper {
   }
 
   async getPreviewImages(moviename: string): Promise<string[]> {
-    const u = `/filmy/${moviename}`;
+    const u = `https://multikino.pl/filmy/${moviename}`;
     debug(`Fetching ${u}`);
     const proxy = this.getProxy();
     const browser = await puppeteer.launch({
-      headless: false,
-      args: [`--proxy-server:${proxy}`]
+      headless: true,
+      args: [`--proxy-server:${proxy}`, "--no-sandbox"]
     });
     const page = await browser.newPage();
     try {
