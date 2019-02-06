@@ -14,12 +14,14 @@
             ],
             "preLaunchTask": "build-tsc",
             "sourceMaps": true,
+            "smartStep": true,
             "console": "internalConsole",
             "internalConsoleOptions": "openOnFirstSessionStart",
             "stopOnEntry": false,
             "skipFiles": [
                 "${workspaceFolder}/node_modules/**/*.js",
-                "${workspaceFolder}/lib/**/*.js"
+                "${workspaceFolder}/build/**/*.js",
+                "<node_internals>/**/*.js",
             ]
         },
     ]
