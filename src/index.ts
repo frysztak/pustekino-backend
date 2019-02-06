@@ -61,19 +61,4 @@ createConnection().then(async connection => {
     await scheduler.start()
 
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
-
-    //const movies = await multikino.getCurrentlyShownMovies(18)
-    //await connection
-    //    .createQueryBuilder()
-    //    .insert()
-    //    .orIgnore()
-    //    .into(Movie)
-    //    .values(movies)
-    //    .execute()
-
-    const moviesRepo = connection.getRepository(Movie)
-    const movies = await moviesRepo.find()
-    const seances = await multikino.getSeances(18, movies[0].multikinoId)
-    console.log(seances)
-
-}).catch(error => { console.log(error) });
+}).catch(error => { console.log(error); throw error; });
