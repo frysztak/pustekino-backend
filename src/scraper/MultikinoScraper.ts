@@ -15,6 +15,7 @@ import { Seance } from "../entity/Seance";
 import moment from "moment";
 import { axiosClient } from "./Axios";
 import querystring from "querystring";
+import { Cinema } from "../entity/Cinema";
 
 const getShowingsUrl = (cinemaId: number) =>
   `/data/filmswithshowings/${cinemaId}`;
@@ -129,15 +130,19 @@ export class MultikinoScraper extends CinemaScraper {
     return movies;
   }
 
-  async getSeances(cinemaId: number, movieId: number): Promise<Seance[]> {
+  async getSeances(cinema: Cinema, movie: Movie): Promise<Seance[]> {
     let u = `/data/getVersions`;
     let res = await axiosClient.post(
       u,
       querystring.stringify({
-        cinema_id: cinemaId,
-        film_id: movieId
+        cinema_id: cinema.multikinoId,
+        film_id: movie.multikinoId
       })
     );
+
+    if (!res.data) {
+      return [];
+    }
 
     const movieVersions = res.data as MovieVersion[];
     const movieDays = await Promise.all(
@@ -146,8 +151,8 @@ export class MultikinoScraper extends CinemaScraper {
         res = await axiosClient.post(
           u,
           querystring.stringify({
-            cinema_id: cinemaId,
-            film_id: movieId,
+            cinema_id: cinema.multikinoId,
+            film_id: movie.multikinoId,
             version_id: version.id
           })
         );
@@ -166,6 +171,8 @@ export class MultikinoScraper extends CinemaScraper {
 
         seance.date = moment(datetime, "HH:mm DD.MM.YYYY").toDate();
         seance.multikinoId = hour.id;
+        seance.movie = movie
+        seance.cinema = cinema
 
         seances.push(seance);
       }
