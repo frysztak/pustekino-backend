@@ -1,4 +1,4 @@
-import { CinemaScraper } from "./CinemaScraper";
+import { CinemaScraper, HeroImage } from "./CinemaScraper";
 import { Movie } from "../entity/Movie";
 import {
   Showings,
@@ -10,7 +10,6 @@ import {
 import * as cheerio from "cheerio";
 import * as url from "url";
 import puppeteer from "puppeteer";
-import { debug } from "util";
 import { Seance } from "../entity/Seance";
 import moment from "moment";
 import "moment-timezone";
@@ -20,12 +19,6 @@ import { Cinema } from "../entity/Cinema";
 
 const getShowingsUrl = (cinemaId: number) =>
   `/data/filmswithshowings/${cinemaId}`;
-
-type HeroImage = {
-  movieId: number;
-  hero_desktop: string;
-  hero_mobile: string;
-};
 
 export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
@@ -38,11 +31,14 @@ export class MultikinoScraper extends CinemaScraper {
     }
     const $ = cheerio.load(html);
 
-    return $(".carousel__ctafull")
-      .map((idx, el) => {
+    return $("div.carousel__panel")
+      .map((_, panel) => {
+        const a = $(panel)
+          .find("[data-adobe-id]")
+          .first();
         let movieId: number = -1;
         try {
-          movieId = parseInt(el.attribs["data-adobe-id"]);
+          movieId = parseInt(a.attr("data-adobe-id"));
         } catch (e) {
           console.log(e);
         }
@@ -52,7 +48,7 @@ export class MultikinoScraper extends CinemaScraper {
           return [];
         }
 
-        const hero = $(el).children(".carousel__hero-image");
+        const hero = $(panel).find(".carousel__hero-image");
         if (hero.length !== 1) {
           throw new Error(`Invalid number of hero images ${hero.length}`);
         }

@@ -70,6 +70,32 @@ export class Scheduler {
     }
   }
 
+  private async scrapeHeroImages() {
+    try {
+      console.log(`Starting to get hero images`);
+
+      const heroImages = await this.scraper.getHeroImages();
+
+      await this.dbConnection.transaction(async transactionalEntityManager => {
+        for (const heroImage of heroImages) {
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .update(Movie)
+            .set({
+              hero_url_desktop: heroImage.hero_desktop,
+              hero_url_mobile: heroImage.hero_mobile
+            })
+            .where("multikinoId = :movieId", { movieId: heroImage.movieId })
+            .execute();
+        }
+      });
+
+      console.log(`Received ${heroImages.length} hero images`);
+    } catch (err) {
+      console.log(`Failed to get hero images: ${err}`);
+    }
+  }
+
   async start() {
     const cinemaRepo = this.dbConnection.getRepository(Cinema);
     const wroclawCinema = await cinemaRepo.findOne({
@@ -82,6 +108,8 @@ export class Scheduler {
       const moviesRepo = this.dbConnection.getRepository(Movie);
       const movies = await moviesRepo.find();
       await Promise.all(movies.map(m => this.scrapeSeances(wroclawCinema, m)));
+
+      await this.scrapeHeroImages();
     };
 
     if (process.env.NODE_ENV === "production") {
