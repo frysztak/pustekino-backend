@@ -134,6 +134,42 @@ export class Scheduler {
     }
   }
 
+  private async removeStrayMovies() {
+    try {
+      console.log("Starting stray movie removal");
+
+      const seanceRepo = this.dbConnection.getRepository(Seance);
+      const usedMovies = await seanceRepo
+        .createQueryBuilder("seance")
+        .select("DISTINCT movie.multikinoId")
+        .leftJoin("seance.movie", "movie")
+        .getRawMany();
+      const usedMoviesIds = usedMovies.map(m => m.multikinoId);
+
+      const movieRepo = this.dbConnection.getRepository(Movie);
+      const existingMovies = await movieRepo.find();
+
+      const movieIdsToRemove = existingMovies
+        .map(m => m.multikinoId)
+        .filter(m => !usedMoviesIds.includes(m));
+
+      await this.dbConnection.transaction(async transactionalEntityManager => {
+        for (const multikinoId of movieIdsToRemove) {
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .delete()
+            .from(Movie)
+            .where("multikinoId = :movieId", { movieId: multikinoId })
+            .execute();
+        }
+      });
+
+      console.log(`Removed ${movieIdsToRemove.length} movies from DB`);
+    } catch (err) {
+      console.log(`Stray movie removal failed: ${err}`);
+    }
+  }
+
   async start() {
     const cinemaRepo = this.dbConnection.getRepository(Cinema);
     const wroclawCinema = await cinemaRepo.findOne({
@@ -150,6 +186,8 @@ export class Scheduler {
 
       await this.scrapeHeroImages();
       await this.scheduleSeanceTasks();
+      await this.removeStrayMovies();
+
       console.log(
         `Finished scraping... ${
           Object.keys(schedule.scheduledJobs).length
