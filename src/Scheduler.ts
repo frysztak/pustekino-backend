@@ -76,12 +76,19 @@ export class Scheduler {
       where: { multikinoId: 18 }
     });
 
-    schedule.scheduleJob({ hour: 1, minute: 0 }, async () => {
+    const job = async () => {
       await this.scrapeCurrentMovies(wroclawCinema);
 
       const moviesRepo = this.dbConnection.getRepository(Movie);
       const movies = await moviesRepo.find();
       await Promise.all(movies.map(m => this.scrapeSeances(wroclawCinema, m)));
-    });
+    };
+
+    if (process.env.NODE_ENV === "production") {
+      schedule.scheduleJob({ hour: 1 }, job);
+    } else {
+      // in development mode, start task immediately
+      job();
+    }
   }
 }
