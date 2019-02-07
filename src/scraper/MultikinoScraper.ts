@@ -1,11 +1,12 @@
-import { CinemaScraper, HeroImage } from "./CinemaScraper";
+import { CinemaScraper, HeroImage, SeanceData } from "./CinemaScraper";
 import { Movie } from "../entity/Movie";
 import {
   Showings,
   Film,
   Gallery,
   MovieVersion,
-  MovieDay
+  MovieDay,
+  SeanceInfo
 } from "./MultikinoTypes";
 import * as cheerio from "cheerio";
 import * as url from "url";
@@ -188,5 +189,33 @@ export class MultikinoScraper extends CinemaScraper {
     }
 
     return seances;
+  }
+
+  async getSeanceData(seanceId: number): Promise<SeanceData> {
+    const u = `/data/getSeats`;
+    let seance: SeanceInfo;
+    try {
+      const res = await axiosClient.post(
+        u,
+        querystring.stringify({
+          seance_id: seanceId
+        })
+      );
+
+      if (!res.data) {
+        return null;
+      }
+
+      seance = res.data as SeanceInfo;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+
+    return {
+      seanceId: seanceId,
+      nAllSeats: seance.seatsStat.all,
+      nTakenSeats: seance.seatsStat.notfree
+    };
   }
 }
