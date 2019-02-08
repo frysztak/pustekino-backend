@@ -142,14 +142,16 @@ export class Scheduler {
     }
   }
 
-  private async removeStrayMovies() {
+  private async markMoviesWithoutSeances() {
     try {
-      console.log("Starting stray movie removal");
+      console.log("Starting to mark movies without seances");
 
       const seanceRepo = this.dbConnection.getRepository(Seance);
       const usedMovies = await seanceRepo
         .createQueryBuilder("seance")
         .select("DISTINCT movie.multikinoId")
+        .where("movie.currently_shown = true")
+        .andWhere("seance.date >= :now", { now: moment.utc().toDate() })
         .leftJoin("seance.movie", "movie")
         .getRawMany();
       const usedMoviesIds = usedMovies.map(m => m.multikinoId);
@@ -157,43 +159,24 @@ export class Scheduler {
       const movieRepo = this.dbConnection.getRepository(Movie);
       const existingMovies = await movieRepo.find();
 
-      const movieIdsToRemove = existingMovies
+      const movieIdsNotShownAnymore = existingMovies
         .map(m => m.multikinoId)
         .filter(m => !usedMoviesIds.includes(m));
 
       await this.dbConnection.transaction(async transactionalEntityManager => {
-        for (const multikinoId of movieIdsToRemove) {
+        for (const multikinoId of movieIdsNotShownAnymore) {
           await transactionalEntityManager
             .createQueryBuilder()
-            .delete()
-            .from(Movie)
+            .update(Movie)
+            .set({ currently_shown: false })
             .where("multikinoId = :movieId", { movieId: multikinoId })
             .execute();
         }
       });
 
-      console.log(`Removed ${movieIdsToRemove.length} movies from DB`);
+      console.log(`Marked ${movieIdsNotShownAnymore.length} movies in DB`);
     } catch (err) {
-      console.log(`Stray movie removal failed: ${err}`);
-    }
-  }
-
-  private async removeStraySeances() {
-    try {
-      console.log("Starting stray seance removal");
-
-      await this.dbConnection.transaction(async transactionalEntityManager => {
-        await transactionalEntityManager
-          .createQueryBuilder()
-          .delete()
-          .from(Seance)
-          .where("date < :now", { now: moment.utc().toDate() })
-          .execute();
-      });
-
-      console.log(`Finished stray seance removal`);
-    } catch (err) {
-      console.log(`Stray seance removal failed: ${err}`);
+      console.log(`Marking movies without seances failed: ${err}`);
     }
   }
 
@@ -212,8 +195,7 @@ export class Scheduler {
       await Promise.all(movies.map(m => this.scrapeSeances(wroclawCinema, m)));
       await this.scrapeHeroImages();
 
-      await this.removeStraySeances();
-      await this.removeStrayMovies();
+      await this.markMoviesWithoutSeances();
       await this.scheduleSeanceTasks();
 
       console.log(

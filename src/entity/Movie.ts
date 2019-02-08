@@ -16,6 +16,9 @@ export class Movie {
   title_eng: string;
 
   @Column()
+  currently_shown: boolean;
+
+  @Column()
   poster_url: string;
 
   @Column()

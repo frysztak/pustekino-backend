@@ -119,6 +119,7 @@ export class MultikinoScraper extends CinemaScraper {
     const mapMovie = async (film: Film): Promise<Movie> => {
       const movie = new Movie();
       movie.multikinoId = parseInt(film.id);
+      movie.currently_shown = true;
       movie.title_pl = film.title;
       movie.poster_url = film.image_poster;
       movie.description_pl = film.synopsis_short;
