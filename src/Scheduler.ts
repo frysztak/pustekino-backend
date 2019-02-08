@@ -50,6 +50,14 @@ export class Scheduler {
       );
 
       const seances = await this.scraper.getSeances(cinema, movie);
+      if (seances.length === 0) {
+        console.log(
+          `Finished getting seances of ${movie.title_pl} @ ${
+            cinema.name
+          }. Received ${seances.length} seances.`
+        );
+        return;
+      }
 
       await this.dbConnection
         .createQueryBuilder()
@@ -170,6 +178,25 @@ export class Scheduler {
     }
   }
 
+  private async removeStraySeances() {
+    try {
+      console.log("Starting stray seance removal");
+
+      await this.dbConnection.transaction(async transactionalEntityManager => {
+        await transactionalEntityManager
+          .createQueryBuilder()
+          .delete()
+          .from(Seance)
+          .where("date < :now", { now: moment.utc().toDate() })
+          .execute();
+      });
+
+      console.log(`Finished stray seance removal`);
+    } catch (err) {
+      console.log(`Stray seance removal failed: ${err}`);
+    }
+  }
+
   async start() {
     const cinemaRepo = this.dbConnection.getRepository(Cinema);
     const wroclawCinema = await cinemaRepo.findOne({
@@ -183,10 +210,11 @@ export class Scheduler {
       const moviesRepo = this.dbConnection.getRepository(Movie);
       const movies = await moviesRepo.find();
       await Promise.all(movies.map(m => this.scrapeSeances(wroclawCinema, m)));
-
       await this.scrapeHeroImages();
-      await this.scheduleSeanceTasks();
+
+      await this.removeStraySeances();
       await this.removeStrayMovies();
+      await this.scheduleSeanceTasks();
 
       console.log(
         `Finished scraping... ${
