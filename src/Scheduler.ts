@@ -1,5 +1,5 @@
 import schedule from "node-schedule";
-import { Connection } from "typeorm";
+import { Connection, MoreThan } from "typeorm";
 import { CinemaScraper } from "./scraper/CinemaScraper";
 import { Cinema } from "./entity/Cinema";
 import { Movie } from "./entity/Movie";
@@ -127,7 +127,9 @@ export class Scheduler {
 
   private async scheduleSeanceTasks() {
     const seanceRepo = this.dbConnection.getRepository(Seance);
-    const seances = await seanceRepo.find();
+    const seances = await seanceRepo.find({
+      date: MoreThan(moment().toDate())
+    });
 
     for (const seance of seances) {
       const jobName = seance.multikinoId.toString();
