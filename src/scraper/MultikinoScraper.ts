@@ -216,7 +216,8 @@ export class MultikinoScraper extends CinemaScraper {
     return {
       seanceId: seanceId,
       nAllSeats: seance.seatsStat.all,
-      nTakenSeats: seance.seatsStat.notfree
+      nTakenSeats: seance.seatsStat.notfree,
+      availability: seance.seatsStat.availability
     };
   }
 }

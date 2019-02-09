@@ -12,6 +12,7 @@ export type SeanceData = {
   seanceId: number;
   nAllSeats: number;
   nTakenSeats: number;
+  availability: number;
 };
 
 export abstract class CinemaScraper {

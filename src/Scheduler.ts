@@ -114,7 +114,8 @@ export class Scheduler {
         .update(Seance)
         .set({
           allSeatCount: seanceData.nAllSeats,
-          takenSeatCount: seanceData.nTakenSeats
+          takenSeatCount: seanceData.nTakenSeats,
+          seatAvailability: seanceData.availability
         })
         .where("multikinoId = :seanceId", { seanceId: seanceData.seanceId })
         .execute();
