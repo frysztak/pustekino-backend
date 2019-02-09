@@ -45,7 +45,14 @@ createConnection().then(async connection => {
     // ...
 
     // start express server
-    app.listen(3000);
+    let portNumber: number
+    if (!process.env.PORT_NUMBER) {
+        console.log("Port number not specified, using default 3000")
+        portNumber = 3000
+    } else {
+        portNumber = parseInt(process.env.PORT_NUMBER)
+    }
+    app.listen(portNumber);
 
     const multikinoCinemas = await getMultikinoCinemas()
     await connection
@@ -60,5 +67,5 @@ createConnection().then(async connection => {
     const scheduler = new Scheduler(connection, multikino)
     await scheduler.start()
 
-    console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
+    console.log(`Express server has started on port ${portNumber}.`)
 }).catch(error => { console.log(error); throw error; });
