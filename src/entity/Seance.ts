@@ -27,7 +27,7 @@ export class Seance {
   @Column({ nullable: true })
   takenSeatCount: number;
 
-  @Column({ nullable: true })
+  @Column({ type: "float", nullable: true })
   seatAvailability: number;
 
   @ManyToOne(type => Cinema)
