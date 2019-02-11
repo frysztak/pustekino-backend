@@ -8,6 +8,7 @@ import { Cinema } from "./entity/Cinema";
 import { MultikinoScraper } from "./scraper/MultikinoScraper";
 import { Movie } from "./entity/Movie";
 import { Scheduler } from "./Scheduler";
+import cors from "cors"
 const fs = require("fs-extra");
 
 const getMultikinoCinemas = async (): Promise<Cinema[]> => {
@@ -23,10 +24,15 @@ const getMultikinoCinemas = async (): Promise<Cinema[]> => {
 }
 
 createConnection().then(async connection => {
-
     // create express app
     const app = express();
     app.use(bodyParser.json());
+    app.disable('etag');
+
+    if (process.env.NODE_ENV === "development") {
+        console.log("Enabled CORS")
+        app.use(cors())
+    }
 
     // register express routes from defined application routes
     Routes.forEach(route => {
@@ -40,9 +46,6 @@ createConnection().then(async connection => {
             }
         });
     });
-
-    // setup express app here
-    // ...
 
     // start express server
     let portNumber: number

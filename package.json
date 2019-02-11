@@ -4,11 +4,13 @@
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
     "@types/cheerio": "^0.22.10",
+    "@types/cors": "^2.8.4",
     "@types/moment-timezone": "^0.5.10",
     "@types/node": "^10.12.21",
     "@types/node-schedule": "^1.2.2",
     "@types/puppeteer": "^1.12.1",
     "@types/tunnel": "0.0.0",
+    "cors": "^2.8.5",
     "ts-node": "8.0.2",
     "typescript": "3.3.1"
   },
