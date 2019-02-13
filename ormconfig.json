@@ -1,24 +1,18 @@
 {
-   "type": "postgres",
-   "host": "localhost",
-   "port": 5432,
-   "username": "postgres",
-   "password": "paprotka",
-   "database": "introkino",
-   "synchronize": true,
-   "logging": false,
-   "entities": [
-      "build/entity/**/*.js"
-   ],
-   "migrations": [
-      "src/migration/**/*.ts"
-   ],
-   "subscribers": [
-      "src/subscriber/**/*.ts"
-   ],
-   "cli": {
-      "entitiesDir": "src/entity",
-      "migrationsDir": "src/migration",
-      "subscribersDir": "src/subscriber"
-   }
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "paprotka",
+  "database": "introkino",
+  "synchronize": true,
+  "logging": false,
+  "entities": ["build/entity/**/*.js"],
+  "migrations": ["build/migration/**/*.js"],
+  "subscribers": ["src/subscriber/**/*.ts"],
+  "cli": {
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  }
 }

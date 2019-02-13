@@ -21,6 +21,54 @@ import { Cinema } from "../entity/Cinema";
 const getShowingsUrl = (cinemaId: number) =>
   `/data/filmswithshowings/${cinemaId}`;
 
+type ScrapedMovieInfo = Pick<
+  Movie,
+  | "poster_large_url"
+  | "hero_url"
+  | "preview_image_urls"
+  | "directors"
+  | "actors"
+  | "country"
+>;
+
+interface MovieData {
+  "@context": string;
+  "@type": string;
+  name: string;
+  image: string;
+  productionCompany: string;
+  dateCreated: Date;
+  genre: string;
+  typicalAgeRange: string;
+  duration: string;
+  description: string;
+  director: Person[];
+  actor: Person[];
+  aggregateRating: AggregateRating;
+  trailer: Trailer;
+}
+
+interface Person {
+  "@type": string;
+  name: string;
+}
+
+interface AggregateRating {
+  "@type": string;
+  ratingCount: number;
+  ratingValue: number;
+  bestRating: number;
+  worstRating: number;
+}
+
+interface Trailer {
+  "@type": string;
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: Date;
+}
+
 export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
     let html: string = "";
@@ -84,21 +132,53 @@ export class MultikinoScraper extends CinemaScraper {
     return args;
   }
 
-  async getPreviewImages(moviename: string): Promise<string[]> {
+  private fixLDJson(ldjson: string): string {
+    // LD-JSON embedded in Multikino website is malformed, strings are not properly escaped
+
+    const regexr = /\: \"(.+)\"\,/g;
+    let fixed = ldjson;
+
+    let matches = [];
+    while ((matches = regexr.exec(ldjson))) {
+      const match = matches[1];
+      const escaped = match.replace(/"/g, '\\"');
+      fixed = fixed.replace(match, escaped);
+    }
+    return fixed;
+  }
+
+  private async scrapeMoviePage(moviename: string): Promise<ScrapedMovieInfo> {
     const u = `https://multikino.pl/filmy/${moviename}`;
     console.log(`Fetching ${u}`);
     const browser = await puppeteer.launch({
       headless: true,
       args: this.getPuppeteerArgs()
     });
+
     const page = await browser.newPage();
     try {
       await page.goto(u);
       const gallery = (await page.evaluate("mlGallery")) as Gallery[];
-      return gallery[0].photos.map(p => p.url);
+      const preview_image_urls = gallery[0].photos.map(p => p.url);
+
+      const ldjson = await page.$eval(
+        'script[type="application/ld+json"]',
+        s => s.innerHTML
+      );
+      const fixedJson = this.fixLDJson(ldjson);
+      const scrapedData = JSON.parse(fixedJson) as MovieData;
+
+      return {
+        preview_image_urls: preview_image_urls,
+        actors: scrapedData.actor.map(a => a.name),
+        directors: scrapedData.director.map(a => a.name),
+        country: scrapedData.productionCompany, // not a typo
+        hero_url: scrapedData.image,
+        poster_large_url: scrapedData.trailer.thumbnailUrl
+      };
     } catch (err) {
       console.error(`Puppeteer failed: ${err}`);
-      return [];
+      return null;
     } finally {
       await browser.close();
     }
@@ -125,9 +205,10 @@ export class MultikinoScraper extends CinemaScraper {
       movie.description_pl = film.synopsis_short;
       movie.genres = film.genres.names.map(g => g.name);
       movie.runtime = parseInt(film.info_runningtime.split(" ")[0]);
-      movie.preview_image_urls = await this.getPreviewImages(
-        film.film_page_name
-      );
+      const scrapedData = await this.scrapeMoviePage(film.film_page_name);
+      if (scrapedData !== null) {
+        return { ...movie, ...scrapedData };
+      }
       return movie;
     };
 

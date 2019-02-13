@@ -15,6 +15,7 @@
       "smartStep": true,
       "console": "internalConsole",
       "internalConsoleOptions": "openOnFirstSessionStart",
+      "env": { "PORT_NUMBER": "3003" },
       "stopOnEntry": false,
       "skipFiles": [
         "${workspaceFolder}/node_modules/**/*.js",

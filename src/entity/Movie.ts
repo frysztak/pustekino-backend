@@ -21,6 +21,9 @@ export class Movie {
   @Column()
   poster_url: string;
 
+  @Column({ default: "" })
+  poster_large_url: string;
+
   @Column()
   description_pl: string;
 
@@ -30,6 +33,9 @@ export class Movie {
   @Column()
   runtime: number;
 
+  @Column({ default: "" })
+  hero_url: string;
+
   @Column({ nullable: true })
   hero_url_desktop: string;
 
@@ -38,4 +44,13 @@ export class Movie {
 
   @Column("text", { array: true })
   preview_image_urls: string[];
+
+  @Column("text", { array: true, default: "{}" })
+  directors: string[];
+
+  @Column("text", { array: true, default: "{}" })
+  actors: string[];
+
+  @Column({ default: "" })
+  country: string;
 }

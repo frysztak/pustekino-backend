@@ -26,6 +26,7 @@ export class Scheduler {
       await this.dbConnection
         .createQueryBuilder()
         .insert()
+        .orUpdate()
         .orIgnore()
         .into(Movie)
         .values(currentlyShownMovies)
