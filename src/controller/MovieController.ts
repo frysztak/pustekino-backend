@@ -8,4 +8,12 @@ export class MovieController {
   async all(request: Request, response: Response, next: NextFunction) {
     return this.movieRepository.find();
   }
+
+  async currentlyShown(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) {
+    return this.movieRepository.find({ currently_shown: true });
+  }
 }
