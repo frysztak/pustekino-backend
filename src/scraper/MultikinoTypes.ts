@@ -291,3 +291,43 @@ export interface SeatsStat {
   notfree: number;
   availability: number;
 }
+
+export namespace LDJSON {
+  export interface MovieData {
+    "@context": string;
+    "@type": string;
+    name: string;
+    image: string;
+    productionCompany: string;
+    dateCreated: Date;
+    genre: string;
+    typicalAgeRange: string;
+    duration: string;
+    description: string;
+    director: Person[];
+    actor: Person[];
+    aggregateRating: AggregateRating;
+    trailer: Trailer;
+  }
+
+  export interface Person {
+    "@type": string;
+    name: string;
+  }
+
+  export interface AggregateRating {
+    "@type": string;
+    ratingCount: number;
+    ratingValue: number;
+    bestRating: number;
+    worstRating: number;
+  }
+
+  export interface Trailer {
+    "@type": string;
+    name: string;
+    description: string;
+    thumbnailUrl: string;
+    uploadDate: Date;
+  }
+}

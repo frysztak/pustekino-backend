@@ -6,7 +6,8 @@ import {
   Gallery,
   MovieVersion,
   MovieDay,
-  SeanceInfo
+  SeanceInfo,
+  LDJSON
 } from "./MultikinoTypes";
 import * as cheerio from "cheerio";
 import * as url from "url";
@@ -30,44 +31,6 @@ type ScrapedMovieInfo = Pick<
   | "actors"
   | "country"
 >;
-
-interface MovieData {
-  "@context": string;
-  "@type": string;
-  name: string;
-  image: string;
-  productionCompany: string;
-  dateCreated: Date;
-  genre: string;
-  typicalAgeRange: string;
-  duration: string;
-  description: string;
-  director: Person[];
-  actor: Person[];
-  aggregateRating: AggregateRating;
-  trailer: Trailer;
-}
-
-interface Person {
-  "@type": string;
-  name: string;
-}
-
-interface AggregateRating {
-  "@type": string;
-  ratingCount: number;
-  ratingValue: number;
-  bestRating: number;
-  worstRating: number;
-}
-
-interface Trailer {
-  "@type": string;
-  name: string;
-  description: string;
-  thumbnailUrl: string;
-  uploadDate: Date;
-}
 
 export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
@@ -135,6 +98,11 @@ export class MultikinoScraper extends CinemaScraper {
   private fixLDJson(ldjson: string): string {
     // LD-JSON embedded in Multikino website is malformed, strings are not properly escaped
 
+    // remove newlines inside quotes
+    ldjson = ldjson.replace(/"[^"]*(?:""[^"]*)*"/g, (match, capture) =>
+      match.replace(/(\r\n|\n|\r)/gm, "")
+    );
+
     const regexr = /\: \"(.+)\"\,/g;
     let fixed = ldjson;
 
@@ -166,7 +134,7 @@ export class MultikinoScraper extends CinemaScraper {
         s => s.innerHTML
       );
       const fixedJson = this.fixLDJson(ldjson);
-      const scrapedData = JSON.parse(fixedJson) as MovieData;
+      const scrapedData = JSON.parse(fixedJson) as LDJSON.MovieData;
 
       return {
         preview_image_urls: preview_image_urls,
