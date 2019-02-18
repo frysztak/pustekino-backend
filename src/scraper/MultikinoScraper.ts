@@ -159,8 +159,10 @@ export class MultikinoScraper extends CinemaScraper {
 
     const currentlyShownFilms = showings.films.filter(
       film =>
-        film.showings.length != 0 &&
+        film.showings.length !== 0 &&
         film.showing_type.name === "Filmy" &&
+        film.show_showings &&
+        film.info_runningtime &&
         !film.coming_soon
     );
 
