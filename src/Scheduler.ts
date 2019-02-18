@@ -23,13 +23,32 @@ export class Scheduler {
         cinema.multikinoId
       );
 
+      await this.dbConnection.transaction(async transactionalEntityManager => {
+        for (const movie of currentlyShownMovies) {
+          await transactionalEntityManager
+            .createQueryBuilder()
+            .update(Movie)
+            .set({
+              poster_large_url: movie.poster_large_url,
+              hero_url: movie.hero_url,
+              directors: movie.directors,
+              actors: movie.actors,
+              country: movie.country
+            })
+            .where("multikinoId = :movieId", { movieId: movie.multikinoId })
+            .execute();
+        }
+      });
+      /*
       await this.dbConnection
         .createQueryBuilder()
-        .insert()
-        .orIgnore()
-        .into(Movie)
+        .update(Movie)
+        .set({
+          
+        })
         .values(currentlyShownMovies)
         .execute();
+        */
 
       console.log(
         `Finished getting currently shown movies @ ${cinema.name}. Received ${
