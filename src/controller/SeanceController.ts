@@ -42,17 +42,26 @@ export class SeanceController {
   }
 
   async upcoming(request: Request, response: Response, next: NextFunction) {
-    const movieId = request.params.movieId;
-    const cinemaId = request.params.cinemaId;
+    const movieId = parseInt(request.params.movieId);
+    const cinemaId = parseInt(request.params.cinemaId);
 
-    const seances = await this.seanceRepository.find({
-      where: {
-        "movie.multikinoId": movieId,
-        "cinema.multikinoId": cinemaId,
-        date: MoreThan(moment.utc().toDate())
-      },
-      order: { date: "ASC" }
-    });
+    const seances = await this.seanceRepository
+      .createQueryBuilder("seance")
+      .select("seance")
+      .where("seance.date >= :now", { now: moment.utc().toDate() })
+      .innerJoin(
+        "seance.cinema",
+        "cinema",
+        `cinema."multikinoId" = :cinemaId`,
+        {
+          cinemaId: cinemaId
+        }
+      )
+      .innerJoin("seance.movie", "movie", `movie."multikinoId" = :movieId`, {
+        movieId: movieId
+      })
+      .orderBy("seance.date", "ASC")
+      .getMany();
 
     const groups = this.groupSeances(seances);
     return { movieId: movieId, cinemaId: cinemaId, ...groups };
