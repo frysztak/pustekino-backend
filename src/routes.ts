@@ -14,6 +14,7 @@ export const Routes = [
     controller: MovieController,
     action: "all"
   },
+
   {
     method: "get",
     route: "/seances/:movieId/at/:cinemaId",
@@ -25,5 +26,11 @@ export const Routes = [
     route: "/seances/all",
     controller: SeanceController,
     action: "all"
+  },
+  {
+    method: "get",
+    route: "/seance/:seanceId",
+    controller: SeanceController,
+    action: "update"
   }
 ];

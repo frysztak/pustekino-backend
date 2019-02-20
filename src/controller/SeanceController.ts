@@ -2,6 +2,7 @@ import { getRepository, MoreThan } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Seance } from "../entity/Seance";
 import moment from "moment";
+import { MultikinoScraper } from "../scraper/MultikinoScraper";
 
 export interface Seances {
   movieId: number;
@@ -13,6 +14,7 @@ export interface Seances {
 
 export class SeanceController {
   private seanceRepository = getRepository(Seance);
+  private scraper = new MultikinoScraper();
 
   async all(request: Request, response: Response, next: NextFunction) {
     return this.seanceRepository.find();
@@ -65,5 +67,27 @@ export class SeanceController {
 
     const groups = this.groupSeances(seances);
     return { movieId: movieId, cinemaId: cinemaId, ...groups };
+  }
+
+  async update(request: Request, response: Response, next: NextFunction) {
+    const seanceId = parseInt(request.params.seanceId);
+
+    const seanceData = await this.scraper.getSeanceData(seanceId);
+    await this.seanceRepository
+      .createQueryBuilder()
+      .update(Seance)
+      .set({
+        allSeatCount: seanceData.nAllSeats,
+        takenSeatCount: seanceData.nTakenSeats,
+        seatAvailability: seanceData.availability
+      })
+      .where("multikinoId = :seanceId", { seanceId: seanceData.seanceId })
+      .execute();
+
+    // this is rather inefficient, but it's far easier to just return Seance from DB
+    // rather than map SeanceData into Seance (from DB)
+    return await this.seanceRepository.findOne({
+      multikinoId: seanceData.seanceId
+    });
   }
 }
