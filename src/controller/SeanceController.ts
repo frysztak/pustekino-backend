@@ -9,7 +9,7 @@ export interface Seances {
   cinemaId: number;
   today: Seance[];
   tomorrow: Seance[];
-  later: Seance[];
+  later: Seance[][];
 }
 
 export class SeanceController {
@@ -24,17 +24,22 @@ export class SeanceController {
     list: Seance[]
   ): Pick<Seances, "today" | "tomorrow" | "later"> {
     const now = moment();
-    const twoDaysAfter = now.clone().add(2, "days");
+    const tomorowDay = now.clone().add(1, "days");
 
     const today = list.filter(seance => moment(seance.date).isSame(now, "day"));
-    const tomorrow = list.filter(
-      seance =>
-        moment(seance.date).isAfter(now, "day") &&
-        moment(seance.date).isBefore(twoDaysAfter, "day")
+    const tomorrow = list.filter(seance =>
+      moment(seance.date).isSame(tomorowDay, "day")
     );
-    const later = list.filter(seance =>
-      moment(seance.date).isAfter(twoDaysAfter, "day")
-    );
+
+    let later: Seance[][] = [];
+    let date = tomorowDay.clone().add(1, "days");
+    while (true) {
+      const l = list.filter(seance => moment(seance.date).isSame(date, "day"));
+      if (l.length === 0) break;
+
+      later.push(l);
+      date = date.clone().add(1, "days");
+    }
 
     return {
       today: today,
