@@ -78,6 +78,11 @@ export class SeanceController {
     const seanceId = parseInt(request.params.seanceId);
 
     const seanceData = await this.scraper.getSeanceData(seanceId);
+    if (seanceData === null) {
+      response.status(500).send();
+      return;
+    }
+
     await this.seanceRepository
       .createQueryBuilder()
       .update(Seance)
