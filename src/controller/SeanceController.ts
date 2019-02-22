@@ -100,4 +100,37 @@ export class SeanceController {
       multikinoId: seanceData.seanceId
     });
   }
+
+  async popularity(request: Request, response: Response, next: NextFunction) {
+    const movieId = parseInt(request.params.movieId);
+    const cinemaId = parseInt(request.params.cinemaId);
+
+    const seances = await this.seanceRepository
+      .createQueryBuilder("seance")
+      .select("seance")
+      .where("seance.date <= :now", { now: moment.utc().toDate() })
+      .innerJoin(
+        "seance.cinema",
+        "cinema",
+        `cinema."multikinoId" = :cinemaId`,
+        { cinemaId: cinemaId }
+      )
+      .innerJoin("seance.movie", "movie", `movie."multikinoId" = :movieId`, {
+        movieId: movieId
+      })
+
+      .orderBy("seance.date", "ASC")
+      .getMany();
+
+    return {
+      movieId: movieId,
+      cinemaId: cinemaId,
+      points: seances
+        .filter(s => s.seatAvailability)
+        .map(s => ({
+          date: s.date,
+          seatAvailability: s.seatAvailability
+        }))
+    };
+  }
 }

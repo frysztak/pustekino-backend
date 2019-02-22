@@ -32,5 +32,11 @@ export const Routes = [
     route: "/seance/:seanceId",
     controller: SeanceController,
     action: "update"
+  },
+  {
+    method: "get",
+    route: "/movie/:movieId/popularity/at/:cinemaId",
+    controller: SeanceController,
+    action: "popularity"
   }
 ];
