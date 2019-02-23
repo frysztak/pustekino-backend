@@ -163,7 +163,8 @@ export class MultikinoScraper extends CinemaScraper {
         film.showing_type.name === "Filmy" &&
         film.show_showings &&
         film.info_runningtime &&
-        !film.coming_soon
+        !film.coming_soon &&
+        moment(film.ReleaseDate).isAfter(moment())
     );
 
     const mapMovie = async (film: Film): Promise<Movie> => {
@@ -175,6 +176,7 @@ export class MultikinoScraper extends CinemaScraper {
       movie.description_pl = film.synopsis_short;
       movie.genres = film.genres.names.map(g => g.name);
       movie.runtime = parseInt(film.info_runningtime.split(" ")[0]);
+      movie.release_date = film.ReleaseDate;
       const scrapedData = await this.scrapeMoviePage(film.film_page_name);
       if (scrapedData !== null) {
         return { ...movie, ...scrapedData };
