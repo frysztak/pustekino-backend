@@ -29,6 +29,7 @@ export class Scheduler {
             .createQueryBuilder()
             .update(Movie)
             .set({
+              release_date: movie.release_date,
               poster_large_url: movie.poster_large_url,
               hero_url: movie.hero_url,
               directors: movie.directors,

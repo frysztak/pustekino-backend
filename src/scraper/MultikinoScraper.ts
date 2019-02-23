@@ -164,7 +164,7 @@ export class MultikinoScraper extends CinemaScraper {
         film.show_showings &&
         film.info_runningtime &&
         !film.coming_soon &&
-        moment(film.ReleaseDate).isAfter(moment())
+        moment(film.ReleaseDate).isBefore(moment())
     );
 
     const mapMovie = async (film: Film): Promise<Movie> => {
