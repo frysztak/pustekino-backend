@@ -53,4 +53,7 @@ export class Movie {
 
   @Column({ default: "" })
   country: string;
+
+  @Column({ nullable: true })
+  release_date: Date;
 }
