@@ -186,17 +186,19 @@ export class Scheduler {
 
   async start() {
     const cinemaRepo = this.dbConnection.getRepository(Cinema);
-    const wroclawCinema = await cinemaRepo.findOne({
-      where: { multikinoId: 18 }
-    });
+    const allCinemas = await cinemaRepo.find();
 
     const job = schedule.scheduleJob({ hour: 1 }, async () => {
       console.log("Starting scraping...");
-      await this.scrapeCurrentMovies(wroclawCinema);
+      for (const cinema of allCinemas) {
+        await this.scrapeCurrentMovies(cinema);
+      }
 
       const moviesRepo = this.dbConnection.getRepository(Movie);
       const movies = await moviesRepo.find();
-      await Promise.all(movies.map(m => this.scrapeSeances(wroclawCinema, m)));
+      for (const cinema of allCinemas) {
+        await Promise.all(movies.map(m => this.scrapeSeances(cinema, m)));
+      }
       await this.scrapeHeroImages();
 
       await this.markMoviesWithoutSeances();
