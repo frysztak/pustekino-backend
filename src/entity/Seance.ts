@@ -30,6 +30,9 @@ export class Seance {
   @Column({ type: "float", nullable: true })
   seatAvailability: number;
 
+  @Column({ nullable: true })
+  seatAvailabilityLastCheck: Date;
+
   @ManyToOne(type => Cinema)
   @JoinColumn()
   cinema: Cinema;

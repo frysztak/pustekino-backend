@@ -89,7 +89,8 @@ export class SeanceController {
       .set({
         allSeatCount: seanceData.nAllSeats,
         takenSeatCount: seanceData.nTakenSeats,
-        seatAvailability: seanceData.availability
+        seatAvailability: seanceData.availability,
+        seatAvailabilityLastCheck: moment.utc().toDate()
       })
       .where("multikinoId = :seanceId", { seanceId: seanceData.seanceId })
       .execute();
