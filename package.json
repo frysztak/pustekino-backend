@@ -35,6 +35,6 @@
   "scripts": {
     "start-ts-node": "ts-node src/index.ts",
     "start": "tsc && node build/index.js",
-    "migrations": "ts-node ./node_modules/typeorm/cli.js migration:run"
+    "migrations": "tsc && ts-node ./node_modules/typeorm/cli.js migration:run"
   }
 }
