@@ -10,6 +10,7 @@
     "@types/node-schedule": "^1.2.2",
     "@types/puppeteer": "^1.12.1",
     "@types/tunnel": "0.0.0",
+    "@types/underscore": "^1.8.12",
     "cors": "^2.8.5",
     "ts-node": "8.0.2",
     "typescript": "3.3.1"
@@ -30,7 +31,8 @@
     "querystring": "^0.2.0",
     "reflect-metadata": "^0.1.10",
     "tunnel": "0.0.6",
-    "typeorm": "0.2.12"
+    "typeorm": "0.2.12",
+    "underscore": "^1.9.1"
   },
   "scripts": {
     "start-ts-node": "ts-node src/index.ts",

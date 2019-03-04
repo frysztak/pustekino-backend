@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { Seance } from "../entity/Seance";
 import moment from "moment";
 import { MultikinoScraper } from "../scraper/MultikinoScraper";
+import _ from "underscore";
 
 export interface Seances {
   movieId: number;
@@ -123,15 +124,29 @@ export class SeanceController {
       .orderBy("seance.date", "ASC")
       .getMany();
 
+    const points = seances
+      .filter(s => s.seatAvailability)
+      .map(s => ({
+        date: s.date,
+        seatAvailability: s.seatAvailability
+      }));
+
+    const groups = _.groupBy(points, x => moment(x.date).format("YYYY-MM-DD"));
+    const averaged = Object.values(groups).map(points => {
+      const values = points.map(p => p.seatAvailability);
+      const sum = values.reduce((a, b) => a + b);
+      const avg = sum / values.length;
+
+      return {
+        date: points[0].date,
+        seatAvailability: avg
+      };
+    });
+
     return {
       movieId: movieId,
       cinemaId: cinemaId,
-      points: seances
-        .filter(s => s.seatAvailability)
-        .map(s => ({
-          date: s.date,
-          seatAvailability: s.seatAvailability
-        }))
+      points: averaged
     };
   }
 }
