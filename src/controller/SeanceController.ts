@@ -139,7 +139,8 @@ export class SeanceController {
 
       return {
         date: points[0].date,
-        seatAvailability: avg
+        // invert popularity values. return fraction of taken seats, rather than free ones
+        seatAvailability: 1.0 - avg
       };
     });
 
