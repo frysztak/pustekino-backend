@@ -144,10 +144,64 @@ export class SeanceController {
       };
     });
 
+    const weekends: Date[][] = [[]];
+    let date = moment(averaged[0].date);
+    const lastDate = moment(averaged[averaged.length - 1].date);
+
+    while (!date.isSame(lastDate, "day")) {
+      const weekday = date.isoWeekday();
+      const isFriday = weekday === 5;
+      const isSaturday = weekday === 6;
+      const isSunday = weekday === 7;
+
+      let group = weekends[weekends.length - 1];
+      if (group.length !== 0) {
+        if (!moment(group[group.length - 1]).isSame(moment(date), "week")) {
+          weekends.push([]);
+          group = weekends[weekends.length - 1];
+        }
+      }
+
+      if (isFriday) {
+        group.push(
+          date
+            .clone()
+            .set("hours", 16)
+            .toDate()
+        );
+      } else if (isSaturday) {
+        group.push(
+          date
+            .clone()
+            .set("hours", 24)
+            .toDate()
+        );
+      } else if (isSunday) {
+        group.push(
+          date
+            .clone()
+            .set("hours", 23)
+            .set("minutes", 59)
+            .set("seconds", 59)
+            .toDate()
+        );
+      }
+
+      date = date.add(1, "day");
+    }
+
+    //const weekends = _.groupBy(averaged.map(p => p.date), date => {
+    //  const weekday = moment(date).isoWeekday();
+    //  return weekday === 5 || weekday === 6 || weekday === 7;
+    //});
+
+    console.log(weekends);
+
     return {
       movieId: movieId,
       cinemaId: cinemaId,
-      points: averaged
+      points: averaged,
+      weekends: weekends
     };
   }
 }
