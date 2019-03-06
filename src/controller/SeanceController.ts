@@ -13,6 +13,54 @@ export interface Seances {
   later: Seance[][];
 }
 
+export interface PopularityPoint {
+  date: Date;
+  seatAvailability: number;
+}
+
+export function groupWeekends(days: Date[]): Date[][] {
+  const weekends: Date[][] = [[]];
+  let date = moment(days[0]);
+  const lastDate = moment(days[days.length - 1])
+    .endOf("isoWeek")
+    .add(1, "days");
+
+  while (!date.isSame(lastDate, "isoWeek")) {
+    const weekday = date.isoWeekday();
+    const isFriday = weekday === 5;
+    const isSaturday = weekday === 6;
+    const isSunday = weekday === 7;
+
+    let group = weekends[weekends.length - 1];
+    if (group.length !== 0) {
+      if (!moment(group[group.length - 1]).isSame(moment(date), "isoWeek")) {
+        weekends.push([]);
+        group = weekends[weekends.length - 1];
+      }
+    }
+
+    if (isFriday) {
+      group.push(
+        date
+          .clone()
+          .set("hours", 16)
+          .toDate()
+      );
+    } else if (isSaturday || isSunday) {
+      group.push(
+        date
+          .clone()
+          .set("hours", 23)
+          .toDate()
+      );
+    }
+
+    date = date.add(1, "day");
+  }
+
+  return weekends;
+}
+
 export class SeanceController {
   private seanceRepository = getRepository(Seance);
   private scraper = new MultikinoScraper();
@@ -124,7 +172,7 @@ export class SeanceController {
       .orderBy("seance.date", "ASC")
       .getMany();
 
-    const points = seances
+    const points: PopularityPoint[] = seances
       .filter(s => s.seatAvailability)
       .map(s => ({
         date: s.date,
@@ -132,70 +180,22 @@ export class SeanceController {
       }));
 
     const groups = _.groupBy(points, x => moment(x.date).format("YYYY-MM-DD"));
-    const averaged = Object.values(groups).map(points => {
-      const values = points.map(p => p.seatAvailability);
-      const sum = values.reduce((a, b) => a + b);
-      const avg = sum / values.length;
+    const averaged = Object.values(groups).map(
+      (points: PopularityPoint[]): PopularityPoint => {
+        const values = points.map(p => p.seatAvailability);
+        const sum = values.reduce((a, b) => a + b);
+        const avg = sum / values.length;
 
-      return {
-        date: points[0].date,
-        // invert popularity values. return fraction of taken seats, rather than free ones
-        seatAvailability: 1.0 - avg
-      };
-    });
-
-    const weekends: Date[][] = [[]];
-    let date = moment(averaged[0].date);
-    const lastDate = moment(averaged[averaged.length - 1].date);
-
-    while (!date.isSame(lastDate, "day")) {
-      const weekday = date.isoWeekday();
-      const isFriday = weekday === 5;
-      const isSaturday = weekday === 6;
-      const isSunday = weekday === 7;
-
-      let group = weekends[weekends.length - 1];
-      if (group.length !== 0) {
-        if (!moment(group[group.length - 1]).isSame(moment(date), "week")) {
-          weekends.push([]);
-          group = weekends[weekends.length - 1];
-        }
+        return {
+          date: points[0].date,
+          // invert popularity values. return fraction of taken seats, rather than free ones
+          seatAvailability: 1.0 - avg
+        };
       }
+    );
 
-      if (isFriday) {
-        group.push(
-          date
-            .clone()
-            .set("hours", 16)
-            .toDate()
-        );
-      } else if (isSaturday) {
-        group.push(
-          date
-            .clone()
-            .set("hours", 24)
-            .toDate()
-        );
-      } else if (isSunday) {
-        group.push(
-          date
-            .clone()
-            .set("hours", 23)
-            .set("minutes", 59)
-            .set("seconds", 59)
-            .toDate()
-        );
-      }
-
-      date = date.add(1, "day");
-    }
-
-    //const weekends = _.groupBy(averaged.map(p => p.date), date => {
-    //  const weekday = moment(date).isoWeekday();
-    //  return weekday === 5 || weekday === 6 || weekday === 7;
-    //});
-
-    console.log(weekends);
+    console.log(averaged);
+    const weekends = groupWeekends(averaged.map(p => p.date));
 
     return {
       movieId: movieId,
