@@ -22,7 +22,11 @@ export interface PopularityPoint {
 
 export function groupWeekends(days: NumericDate[]): NumericDate[][] {
   const weekends: NumericDate[][] = [[]];
-  let date = moment(days[0]);
+  // return entire weekend, even if we begin from saturday or sunday
+  let date = moment(days[0])
+    .startOf("isoWeek")
+    .add(4, "days");
+
   const lastDate = moment(days[days.length - 1])
     .endOf("isoWeek")
     .add(1, "days");
