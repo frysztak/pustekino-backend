@@ -5,6 +5,8 @@ import moment from "moment";
 import { MultikinoScraper } from "../scraper/MultikinoScraper";
 import _ from "underscore";
 
+export type NumericDate = number;
+
 export interface Seances {
   movieId: number;
   cinemaId: number;
@@ -14,12 +16,12 @@ export interface Seances {
 }
 
 export interface PopularityPoint {
-  date: Date;
+  date: NumericDate;
   seatAvailability: number;
 }
 
-export function groupWeekends(days: Date[]): Date[][] {
-  const weekends: Date[][] = [[]];
+export function groupWeekends(days: NumericDate[]): NumericDate[][] {
+  const weekends: NumericDate[][] = [[]];
   let date = moment(days[0]);
   const lastDate = moment(days[days.length - 1])
     .endOf("isoWeek")
@@ -45,6 +47,7 @@ export function groupWeekends(days: Date[]): Date[][] {
           .clone()
           .set("hours", 16)
           .toDate()
+          .getTime()
       );
     } else if (isSaturday || isSunday) {
       group.push(
@@ -52,6 +55,7 @@ export function groupWeekends(days: Date[]): Date[][] {
           .clone()
           .set("hours", 23)
           .toDate()
+          .getTime()
       );
     }
 
@@ -175,7 +179,7 @@ export class SeanceController {
     const points: PopularityPoint[] = seances
       .filter(s => s.seatAvailability)
       .map(s => ({
-        date: s.date,
+        date: new Date(s.date).getTime(),
         seatAvailability: s.seatAvailability
       }));
 
@@ -194,7 +198,6 @@ export class SeanceController {
       }
     );
 
-    console.log(averaged);
     const weekends = groupWeekends(averaged.map(p => p.date));
 
     return {
