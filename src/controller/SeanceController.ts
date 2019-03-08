@@ -134,6 +134,15 @@ export class SeanceController {
   async update(request: Request, response: Response, next: NextFunction) {
     const seanceId = parseInt(request.params.seanceId);
 
+    const seance = await this.seanceRepository.findOne({
+      multikinoId: seanceId
+    });
+    const lastCheck = moment(seance.seatAvailabilityLastCheck);
+    const difference = moment.duration(moment().diff(lastCheck));
+    if (difference.asMinutes() < 10) {
+      return seance;
+    }
+
     const seanceData = await this.scraper.getSeanceData(seanceId);
     if (seanceData === null) {
       response.status(500).send();
