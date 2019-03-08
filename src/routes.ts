@@ -1,5 +1,6 @@
 import { MovieController } from "./controller/MovieController";
 import { SeanceController } from "./controller/SeanceController";
+import { CinemaController } from "./controller/CinemaController";
 
 export const Routes = [
   {
@@ -38,5 +39,12 @@ export const Routes = [
     route: "/movie/:movieId/popularity/at/:cinemaId",
     controller: SeanceController,
     action: "popularity"
+  },
+
+  {
+    method: "get",
+    route: "/cinemas",
+    controller: CinemaController,
+    action: "all"
   }
 ];
