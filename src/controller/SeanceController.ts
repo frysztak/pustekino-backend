@@ -207,7 +207,7 @@ export class SeanceController {
     return {
       movieId: movieId,
       cinemaId: cinemaId,
-      points: averaged,
+      points: averaged.length > 4 ? averaged : [],
       weekends: weekends
     };
   }
