@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { ColumnNumericTransformer } from "../utils/ColumnNumericTransformer";
 
 @Entity()
 @Unique(["multikinoId"])
@@ -15,9 +16,9 @@ export class Cinema {
   @Column()
   multikinoId: number;
 
-  @Column()
+  @Column({ transformer: new ColumnNumericTransformer() })
   latitude: number;
 
-  @Column()
+  @Column({ transformer: new ColumnNumericTransformer() })
   longitude: number;
 }
