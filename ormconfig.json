@@ -5,7 +5,7 @@
   "username": "postgres",
   "password": "paprotka",
   "database": "introkino",
-  "synchronize": true,
+  "synchronize": false,
   "logging": false,
   "entities": ["build/entity/**/*.js"],
   "migrations": ["build/migration/**/*.js"],
