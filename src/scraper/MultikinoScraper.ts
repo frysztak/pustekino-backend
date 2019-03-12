@@ -148,6 +148,7 @@ export class MultikinoScraper extends CinemaScraper {
       console.error(`Puppeteer failed: ${err}`);
       return null;
     } finally {
+      await page.close();
       await browser.close();
     }
   }
