@@ -14,4 +14,10 @@ export class Cinema {
 
   @Column()
   multikinoId: number;
+
+  @Column()
+  latitude: number;
+
+  @Column()
+  longitude: number;
 }

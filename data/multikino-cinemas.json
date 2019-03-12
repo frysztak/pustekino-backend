@@ -4,223 +4,287 @@
     "city": "Bydgoszcz",
     "areaId": "3000000010113",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 53.12686565,
+    "longitude": 17.989515177484222
   },
   {
     "id": "37",
     "city": "Czechowice-Dziedzice",
     "areaId": "37000000010114",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 49.9116836,
+    "longitude": 18.9975362
   },
   {
     "id": "2",
     "city": "Elbląg",
     "areaId": "2000000101213",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 54.1558708,
+    "longitude": 19.4044583
   },
   {
     "id": "4",
     "city": "Gdańsk",
     "areaId": "4000000010102",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 54.37209945,
+    "longitude": 18.627238493164096
   },
   {
     "id": "41",
     "city": "Jaworzno",
     "areaId": "41000000101216",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.2040917,
+    "longitude": 19.2671484
   },
   {
     "id": "39",
     "city": "Katowice",
     "areaId": "39000000010115",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.2588737,
+    "longitude": 19.0175994
   },
   {
     "id": "33",
     "city": "Kielce",
     "areaId": "33000000010104",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.8753792,
+    "longitude": 20.6361291
   },
   {
     "id": "6",
     "city": "Koszalin",
     "areaId": "6000000010105",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 54.1773949,
+    "longitude": 16.2005116
   },
   {
     "id": "7",
     "city": "Kraków",
     "areaId": "7000000010106",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.08915485,
+    "longitude": 19.984852415603243
   },
   {
     "id": "38",
     "city": "Lublin",
     "areaId": "38000000010116",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 51.2669865,
+    "longitude": 22.5711216
   },
   {
     "id": "21",
     "city": "Łódź",
     "areaId": "21000000010111",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 51.7687323,
+    "longitude": 19.4569911
   },
   {
     "id": "40",
     "city": "Olsztyn",
     "areaId": "40000000101169",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 53.7545091,
+    "longitude": 20.4851403
   },
   {
     "id": "8",
     "city": "Poznań Malta",
     "areaId": "8000000010117",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.4017442,
+    "longitude": 16.9600917
   },
   {
     "id": "9",
     "city": "Poznań Multikino 51",
     "areaId": "9000000010118",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.3992049,
+    "longitude": 16.9270643
   },
   {
     "id": "10",
     "city": "Poznań Stary Browar",
     "areaId": "10000000010119",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.4028363,
+    "longitude": 16.9222293
   },
   {
     "id": "42",
     "city": "Pruszków",
     "areaId": "42000000010132",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.1654142,
+    "longitude": 20.7909314
   },
   {
     "id": "26",
     "city": "Radom",
     "areaId": "26000000010112",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 51.4052138,
+    "longitude": 21.1518634
   },
   {
     "id": "25",
     "city": "Rumia",
     "areaId": "25000000010120",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 54.563419,
+    "longitude": 18.3877982
   },
   {
     "id": "11",
     "city": "Rybnik",
     "areaId": "11000000010121",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.0939986,
+    "longitude": 18.541561
   },
   {
     "id": "30",
     "city": "Rzeszów",
     "areaId": "30000000010122",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.0273674,
+    "longitude": 22.0124083
   },
   {
     "id": "32",
     "city": "Słupsk",
     "areaId": "32000000010123",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 54.4540735,
+    "longitude": 16.990019
   },
   {
     "id": "12",
     "city": "Sopot",
     "areaId": "12000000010124",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 54.4451433,
+    "longitude": 18.5654691
   },
   {
     "id": "13",
     "city": "Szczecin",
     "areaId": "13000000010125",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 53.4337651,
+    "longitude": 14.5536844
   },
   {
     "id": "35",
     "city": "Tychy",
     "areaId": "35000000010131",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.1115299,
+    "longitude": 18.9857657
   },
   {
     "id": "14",
     "city": "Warszawa Targówek",
     "areaId": "14000000010109",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.3022924,
+    "longitude": 21.0553516
   },
   {
     "id": "19",
     "city": "Warszawa Ursynów",
     "areaId": "19000000010107",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.1498203,
+    "longitude": 21.0446203
   },
   {
     "id": "15",
     "city": "Warszawa Wola Park",
     "areaId": "15000000010110",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.2417612,
+    "longitude": 20.930717
   },
   {
     "id": "1",
     "city": "Warszawa Złote Tarasy",
     "areaId": "1000000010108",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.2301117,
+    "longitude": 21.0004984
   },
   {
     "id": "16",
     "city": "Włocławek",
     "areaId": "16000000010126",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 52.6543472,
+    "longitude": 19.0588139
   },
   {
     "id": "18",
     "city": "Wrocław Pasaż Grunwaldzki",
     "areaId": "18000000010128",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 51.1125702,
+    "longitude": 17.0573439
   },
   {
     "id": "20",
     "city": "Zabrze",
     "areaId": "20000000010129",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 50.3174407,
+    "longitude": 18.7749213
   },
   {
     "id": "34",
     "city": "Zgorzelec",
     "areaId": "34000000010130",
     "status": "1",
-    "applyIsPair": "1"
+    "applyIsPair": "1",
+    "latitude": 51.1529263,
+    "longitude": 15.0247303
   }
 ]

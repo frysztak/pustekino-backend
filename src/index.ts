@@ -19,6 +19,8 @@ const getMultikinoCinemas = async (): Promise<Cinema[]> => {
         cinema.chain = "Multikino"
         cinema.name = entry.city;
         cinema.multikinoId = entry.id;
+        cinema.latitude = entry.latitude;
+        cinema.longitude = entry.longitude;
         return cinema
     })
 }
@@ -58,13 +60,17 @@ createConnection().then(async connection => {
     app.listen(portNumber);
 
     const multikinoCinemas = await getMultikinoCinemas()
-    await connection
-        .createQueryBuilder()
-        .insert()
-        .orIgnore()
-        .into(Cinema)
-        .values(multikinoCinemas)
-        .execute()
+    for (const cinema of multikinoCinemas){
+        await connection
+            .createQueryBuilder()
+            .insert()
+            .onConflict(`("multikinoId") DO UPDATE SET "latitude" = :latitude, "longitude" = :longitude`)
+            .setParameter("latitude", cinema.latitude)
+            .setParameter("longitude", cinema.longitude)
+            .into(Cinema)
+            .values(cinema)
+            .execute()
+    }
 
     const multikino = new MultikinoScraper()
     const scheduler = new Scheduler(connection, multikino)
