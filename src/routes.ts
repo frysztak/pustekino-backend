@@ -46,11 +46,5 @@ export const Routes = [
     route: "/cinemas",
     controller: CinemaController,
     action: "all"
-  },
-  {
-    method: "get",
-    route: "/cinemas/map",
-    controller: CinemaController,
-    action: "map"
   }
 ];
