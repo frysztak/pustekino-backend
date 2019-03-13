@@ -12,7 +12,7 @@ import cors from "cors"
 const fs = require("fs-extra");
 
 const getMultikinoCinemas = async (): Promise<Cinema[]> => {
-    const raw = await fs.readFile(`/home/frysztak/repo/IntroKino-backend/data/multikino-cinemas.json`);
+    const raw = await fs.readFile(`./data/multikino-cinemas.json`);
     const json = JSON.parse(raw);
     return json.map((entry: any) => {
         const cinema = new Cinema()
