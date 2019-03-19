@@ -15,6 +15,12 @@ export const Routes = [
     controller: MovieController,
     action: "all"
   },
+  {
+    method: "get",
+    route: "/movies/at/:cinemaId",
+    controller: MovieController,
+    action: "atCinema"
+  },
 
   {
     method: "get",
