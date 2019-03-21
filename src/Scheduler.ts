@@ -15,12 +15,14 @@ export class Scheduler {
     this.scraper = scraper;
   }
 
-  private async scrapeCurrentMovies(cinema: Cinema) {
+  private async scrapeCurrentMovies(cinemas: Cinema[]) {
     try {
-      console.log(`Starting to get currently shown movies @ ${cinema.name}`);
+      console.log(
+        `Starting to get currently shown movies @ ${cinemas.length} cinemas`
+      );
 
-      const currentlyShownMovies = await this.scraper.getCurrentlyShownMovies(
-        cinema.multikinoId
+      const movies = await this.scraper.getCurrentlyShownMovies(
+        cinemas.map(c => c.multikinoId)
       );
 
       await this.dbConnection
@@ -28,17 +30,19 @@ export class Scheduler {
         .insert()
         .orIgnore()
         .into(Movie)
-        .values(currentlyShownMovies)
+        .values(movies)
         .execute();
 
       console.log(
-        `Finished getting currently shown movies @ ${cinema.name}. Received ${
-          currentlyShownMovies.length
-        } movies.`
+        `Finished getting currently shown movies @ ${
+          cinemas.length
+        } cinemas. Received ${movies.length} movies.`
       );
     } catch (err) {
       console.log(
-        `Getting currently shown movies @ ${cinema.name} failed: ${err}`
+        `Getting currently shown movies @ ${
+          cinemas.length
+        } cinemas failed: ${err}`
       );
     }
   }
@@ -190,9 +194,7 @@ export class Scheduler {
 
     const job = schedule.scheduleJob({ hour: 1 }, async () => {
       console.log("Starting scraping...");
-      for (const cinema of allCinemas) {
-        await this.scrapeCurrentMovies(cinema);
-      }
+      await this.scrapeCurrentMovies(allCinemas);
 
       const moviesRepo = this.dbConnection.getRepository(Movie);
       const movies = await moviesRepo.find();

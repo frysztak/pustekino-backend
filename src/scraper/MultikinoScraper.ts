@@ -153,41 +153,60 @@ export class MultikinoScraper extends CinemaScraper {
     }
   }
 
-  async getCurrentlyShownMovies(cinemaId: number): Promise<Movie[]> {
-    const url = getShowingsUrl(cinemaId);
-    const res = await axiosClient.get(url);
-    const showings = res.data as Showings;
+  private async mapMovie(film: Film): Promise<Movie> {
+    const movie = new Movie();
+    movie.multikinoId = parseInt(film.id);
+    movie.currently_shown = true;
+    movie.title_pl = film.title;
+    movie.poster_url = film.image_poster;
+    movie.description_pl = film.synopsis_short;
+    movie.genres = film.genres.names.map(g => g.name);
+    movie.runtime = parseInt(film.info_runningtime.split(" ")[0]);
+    movie.release_date = film.ReleaseDate;
+    const scrapedData = await this.scrapeMoviePage(film.film_page_name);
+    if (scrapedData !== null) {
+      return { ...movie, ...scrapedData };
+    }
+    return movie;
+  }
 
-    const currentlyShownFilms = showings.films.filter(
-      film =>
-        film.showings.length !== 0 &&
-        film.showing_type.name === "Filmy" &&
-        film.show_showings &&
-        film.info_runningtime &&
-        !film.coming_soon &&
-        moment(film.ReleaseDate).isBefore(moment())
+  async getCurrentlyShownMovies(cinemaIds: number[]): Promise<Movie[]> {
+    const films = await Promise.all(
+      cinemaIds.map(async cinemaId => {
+        const url = getShowingsUrl(cinemaId);
+        const res = await axiosClient.get(url);
+        const showings = res.data as Showings;
+
+        const films = showings.films.filter(
+          film =>
+            film.showings.length !== 0 &&
+            film.showing_type.name === "Filmy" &&
+            film.show_showings &&
+            film.info_runningtime &&
+            !film.coming_soon &&
+            moment(film.ReleaseDate).isBefore(moment())
+        );
+        return films;
+      })
     );
 
-    const mapMovie = async (film: Film): Promise<Movie> => {
-      const movie = new Movie();
-      movie.multikinoId = parseInt(film.id);
-      movie.currently_shown = true;
-      movie.title_pl = film.title;
-      movie.poster_url = film.image_poster;
-      movie.description_pl = film.synopsis_short;
-      movie.genres = film.genres.names.map(g => g.name);
-      movie.runtime = parseInt(film.info_runningtime.split(" ")[0]);
-      movie.release_date = film.ReleaseDate;
-      const scrapedData = await this.scrapeMoviePage(film.film_page_name);
-      if (scrapedData !== null) {
-        return { ...movie, ...scrapedData };
+    const uniqueFilms: Film[] = [];
+    const usedIds = new Set();
+
+    for (const filmsForCinema of films) {
+      for (const film of filmsForCinema) {
+        const id = film.id;
+        if (usedIds.has(id)) continue;
+
+        usedIds.add(id);
+        uniqueFilms.push(film);
       }
-      return movie;
-    };
+    }
 
     const movies: Movie[] = [];
-    for (const film of currentlyShownFilms) {
-      movies.push(await mapMovie(film));
+    for (const film of uniqueFilms) {
+      // doing this sequentially is crucial, since mapMovie() uses puppeeteer
+      movies.push(await this.mapMovie(film));
     }
 
     return movies;

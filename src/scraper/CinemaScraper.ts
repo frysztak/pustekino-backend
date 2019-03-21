@@ -16,7 +16,7 @@ export type SeanceData = {
 };
 
 export abstract class CinemaScraper {
-  abstract async getCurrentlyShownMovies(cinemaId: number): Promise<Movie[]>;
+  abstract async getCurrentlyShownMovies(cinemaIds: number[]): Promise<Movie[]>;
   abstract async getSeances(cinema: Cinema, movie: Movie): Promise<Seance[]>;
   abstract async getHeroImages(): Promise<HeroImage[]>;
   abstract async getSeanceData(seanceId: number): Promise<SeanceData>;
