@@ -1,7 +1,5 @@
-# Awesome Project Build with TypeORM
+## PusteKino backend
 
-Steps to run this project:
+Backend for https://github.com/frysztak/pustekino.
 
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+Contains Multikino scraper (using Pupeeteer), DB storage (Postgres/TypeORM) and exposes REST API (Express).
