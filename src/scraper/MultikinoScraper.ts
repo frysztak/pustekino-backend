@@ -15,9 +15,12 @@ import puppeteer from "puppeteer";
 import { Seance } from "../entity/Seance";
 import moment from "moment";
 import "moment-timezone";
-import { axiosClient } from "./Axios";
-import querystring from "querystring";
 import { Cinema } from "../entity/Cinema";
+
+var cloudscraper = require("cloudscraper").defaults({
+  baseUrl: "https://multikino.pl",
+  proxy: process.env["https_proxy"]
+});
 
 const getShowingsUrl = (cinemaId: number) =>
   `/data/filmswithshowings/${cinemaId}`;
@@ -36,8 +39,7 @@ export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
     let html: string = "";
     try {
-      const res = await axiosClient.get(`https://multikino.pl`);
-      html = res.data;
+      html = await cloudscraper.get(`https://multikino.pl`);
     } catch (err) {
       console.error(err);
     }
@@ -174,9 +176,12 @@ export class MultikinoScraper extends CinemaScraper {
     const films = await Promise.all(
       cinemaIds.map(async cinemaId => {
         const url = getShowingsUrl(cinemaId);
-        const res = await axiosClient.get(url);
-        const showings = res.data as Showings;
+        const res = await cloudscraper.get(url);
+        if (!res || res === "null") {
+          return [];
+        }
 
+        const showings = JSON.parse(res) as Showings;
         const films = showings.films.filter(
           film =>
             film.showings.length !== 0 &&
@@ -213,32 +218,30 @@ export class MultikinoScraper extends CinemaScraper {
   }
 
   async getSeances(cinema: Cinema, movie: Movie): Promise<Seance[]> {
-    let u = `/data/getVersions`;
-    let res = await axiosClient.post(
-      u,
-      querystring.stringify({
+    const res = await cloudscraper.post({
+      uri: `/data/getVersions`,
+      formData: {
         cinema_id: cinema.multikinoId,
         film_id: movie.multikinoId
-      })
-    );
+      }
+    });
 
-    if (!res.data) {
+    if (res === null || res === "null") {
       return [];
     }
 
-    const movieVersions = res.data as MovieVersion[];
+    const movieVersions = JSON.parse(res) as MovieVersion[];
     const movieDays = await Promise.all(
       movieVersions.map(async version => {
-        const u = `/data/getDays`;
-        res = await axiosClient.post(
-          u,
-          querystring.stringify({
+        const res = await cloudscraper.post({
+          uri: `/data/getDays`,
+          formData: {
             cinema_id: cinema.multikinoId,
             film_id: movie.multikinoId,
             version_id: version.id
-          })
-        );
-        return res.data as MovieDay[];
+          }
+        });
+        return JSON.parse(res) as MovieDay[];
       })
     );
 
@@ -266,21 +269,20 @@ export class MultikinoScraper extends CinemaScraper {
   }
 
   async getSeanceData(seanceId: number): Promise<SeanceData> {
-    const u = `/data/getSeats`;
     let seance: SeanceInfo;
     try {
-      const res = await axiosClient.post(
-        u,
-        querystring.stringify({
+      const res = await cloudscraper.post({
+        uri: `/data/getSeats`,
+        formData: {
           seance_id: seanceId
-        })
-      );
+        }
+      });
 
-      if (!res.data) {
+      if (!res || res === "null") {
         return null;
       }
 
-      seance = res.data as SeanceInfo;
+      seance = JSON.parse(res) as SeanceInfo;
     } catch (err) {
       console.log(err);
       return null;
