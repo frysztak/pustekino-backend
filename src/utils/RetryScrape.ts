@@ -18,10 +18,9 @@ export const RetryScrape = async (
       if (response !== "null") {
         return response;
       }
-    } catch (err) {
-      console.error(`Fetching ${url} attempt ${i + 1} failed, err: ${err}`);
-    }
+    } catch (err) {}
   }
 
+  console.error(`Fetching ${url} failed completely`);
   return "null";
 };
