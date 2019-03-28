@@ -85,11 +85,6 @@ export class MultikinoScraper extends CinemaScraper {
   getPuppeteerArgs(): string[] {
     const args: string[] = [];
 
-    const proxy = process.env.https_proxy;
-    if (proxy) {
-      args.push(`--proxy-server:${proxy}`);
-    }
-
     if (process.env.no_sandbox) {
       args.push("--no-sandbox");
     }
