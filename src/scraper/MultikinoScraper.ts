@@ -16,6 +16,7 @@ import { Seance } from "../entity/Seance";
 import moment from "moment";
 import "moment-timezone";
 import { Cinema } from "../entity/Cinema";
+import { RetryScrape } from "../utils/RetryScrape";
 
 var cloudscraper = require("cloudscraper").defaults({
   baseUrl: "https://multikino.pl",
@@ -37,14 +38,13 @@ type ScrapedMovieInfo = Pick<
 
 export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
-    let html: string = "";
-    try {
-      html = await cloudscraper.get(`https://multikino.pl`);
-    } catch (err) {
-      console.error(err);
-    }
-    const $ = cheerio.load(html);
+    const html: string = await RetryScrape(
+      "GET",
+      cloudscraper,
+      `https://multikino.pl`
+    );
 
+    const $ = cheerio.load(html);
     return $("div.carousel__panel")
       .map((_, panel) => {
         const a = $(panel)
@@ -176,7 +176,8 @@ export class MultikinoScraper extends CinemaScraper {
     const films = await Promise.all(
       cinemaIds.map(async cinemaId => {
         const url = getShowingsUrl(cinemaId);
-        const res = await cloudscraper.get(url);
+        //const res = await cloudscraper.get(url);
+        const res = await RetryScrape("GET", cloudscraper, url);
         if (!res || res === "null") {
           return [];
         }
@@ -218,12 +219,9 @@ export class MultikinoScraper extends CinemaScraper {
   }
 
   async getSeances(cinema: Cinema, movie: Movie): Promise<Seance[]> {
-    const res = await cloudscraper.post({
-      uri: `/data/getVersions`,
-      formData: {
-        cinema_id: cinema.multikinoId,
-        film_id: movie.multikinoId
-      }
+    const res = await RetryScrape("POST", cloudscraper, `/data/getVersions`, {
+      cinema_id: cinema.multikinoId,
+      film_id: movie.multikinoId
     });
 
     if (res === null || res === "null") {
@@ -271,11 +269,8 @@ export class MultikinoScraper extends CinemaScraper {
   async getSeanceData(seanceId: number): Promise<SeanceData> {
     let seance: SeanceInfo;
     try {
-      const res = await cloudscraper.post({
-        uri: `/data/getSeats`,
-        formData: {
-          seance_id: seanceId
-        }
+      const res = await RetryScrape("POST", cloudscraper, `/data/getSeats`, {
+        seance_id: seanceId
       });
 
       if (!res || res === "null") {
