@@ -121,6 +121,16 @@ export class MultikinoScraper extends CinemaScraper {
     });
 
     const page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on("request", req => {
+      const type = req.resourceType();
+      if (type == "stylesheet" || type == "font" || type == "image") {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+
     try {
       await page.goto(u);
       const gallery = (await page.evaluate("mlGallery")) as Gallery[];
@@ -171,7 +181,6 @@ export class MultikinoScraper extends CinemaScraper {
     const films = await Promise.all(
       cinemaIds.map(async cinemaId => {
         const url = getShowingsUrl(cinemaId);
-        //const res = await cloudscraper.get(url);
         const res = await RetryScrape("GET", cloudscraper, url);
         if (!res || res === "null") {
           return [];
