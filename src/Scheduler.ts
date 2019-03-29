@@ -219,6 +219,8 @@ export class Scheduler {
 
     if (process.env.NODE_ENV !== "production") {
       job.invoke();
+    } else {
+      await this.scheduleSeanceTasks();
     }
   }
 }
