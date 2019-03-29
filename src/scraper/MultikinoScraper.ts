@@ -38,11 +38,10 @@ type ScrapedMovieInfo = Pick<
 
 export class MultikinoScraper extends CinemaScraper {
   async getHeroImages(): Promise<HeroImage[]> {
-    const html: string = await RetryScrape(
-      "GET",
-      cloudscraper,
-      `https://multikino.pl`
-    );
+    const html = await RetryScrape("GET", cloudscraper, `https://multikino.pl`);
+    if (!html) {
+      return [];
+    }
 
     const $ = cheerio.load(html);
     return $("div.carousel__panel")
@@ -227,22 +226,21 @@ export class MultikinoScraper extends CinemaScraper {
       cinema_id: cinema.multikinoId,
       film_id: movie.multikinoId
     });
-
-    if (res === null || res === "null") {
+    if (!res || res === "null") {
       return [];
     }
 
     const movieVersions = JSON.parse(res) as MovieVersion[];
     const movieDays = await Promise.all(
       movieVersions.map(async version => {
-        const res = await cloudscraper.post({
-          uri: `/data/getDays`,
-          formData: {
-            cinema_id: cinema.multikinoId,
-            film_id: movie.multikinoId,
-            version_id: version.id
-          }
+        const res = await RetryScrape("POST", cloudscraper, `/data/getDays`, {
+          cinema_id: cinema.multikinoId,
+          film_id: movie.multikinoId,
+          version_id: version.id
         });
+        if (!res || res === "null") {
+          return [];
+        }
         return JSON.parse(res) as MovieDay[];
       })
     );

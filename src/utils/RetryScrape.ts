@@ -15,12 +15,10 @@ export const RetryScrape = async (
           ? await scraper.get(url)
           : await scraper.post({ uri: url, formData: formData });
 
-      if (response !== "null") {
-        return response;
-      }
+      return response;
     } catch (err) {}
   }
 
   console.error(`Fetching ${url} failed completely`);
-  return "null";
+  return null;
 };

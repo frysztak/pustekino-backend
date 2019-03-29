@@ -88,6 +88,10 @@ export class Scheduler {
       console.log(`Starting to get hero images`);
 
       const heroImages = await this.scraper.getHeroImages();
+      if (heroImages.length === 0) {
+        console.log(`Received ${heroImages.length} hero images`);
+        return;
+      }
 
       await this.dbConnection.transaction(async transactionalEntityManager => {
         for (const heroImage of heroImages) {
