@@ -19,8 +19,7 @@ import { Cinema } from "../entity/Cinema";
 import { RetryScrape } from "../utils/RetryScrape";
 
 var cloudscraper = require("cloudscraper").defaults({
-  baseUrl: "https://multikino.pl",
-  proxy: process.env["https_proxy"]
+  baseUrl: "https://multikino.pl"
 });
 
 const getShowingsUrl = (cinemaId: number) =>
