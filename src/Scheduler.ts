@@ -25,6 +25,11 @@ export class Scheduler {
         cinemas.map(c => c.multikinoId)
       );
 
+      if (movies.length === 0) {
+        console.log(`Received 0 currently shown movies`);
+        return;
+      }
+
       await this.dbConnection
         .createQueryBuilder()
         .insert()
@@ -117,6 +122,11 @@ export class Scheduler {
     try {
       console.log(`Getting seance data: ${seanceId}`);
       const seanceData = await this.scraper.getSeanceData(seanceId);
+      if (!seanceData) {
+        console.log(`Failed to receive seance data for ID ${seanceId}`);
+        return;
+      }
+
       await this.dbConnection
         .createQueryBuilder()
         .update(Seance)
