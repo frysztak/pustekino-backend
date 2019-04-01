@@ -6,13 +6,11 @@
       "log_date_format": "YYYY-MM-DD HH:mm Z",
       "env": {
         "NODE_ENV": "development",
-        "PORT_NUMBER": 3341,
-        "emergency_https_proxy": "http://localhost:9999"
+        "PORT_NUMBER": 3341
       },
       "env_production": {
         "NODE_ENV": "production",
-        "PORT_NUMBER": 3341,
-        "emergency_https_proxy": "http://localhost:9999"
+        "PORT_NUMBER": 3341
       }
     }
   ]
